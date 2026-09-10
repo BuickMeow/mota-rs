@@ -145,6 +145,18 @@
           "field_type": "int",
           "default": 0,
           "description": "破坏范围（<0=整层，0=面前一格，>0=以勇士为中心的方形半径）"
+        },
+        {
+          "name": "break_tiles",
+          "field_type": "list",
+          "default": [],
+          "description": "工具可清除的地形图块 id（墙/冰/熔岩）"
+        },
+        {
+          "name": "break_layer",
+          "field_type": "int",
+          "default": 1,
+          "description": "清除的图块层（0背景/1墙/2熔岩冰），默认1"
         }
       ]
     },

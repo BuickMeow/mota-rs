@@ -25,8 +25,12 @@ pub struct Playtest {
     pub flags: HashMap<String, bool>,
     /// 本局已消费的一次性实例 id（Once）：切层重进不再出现。
     pub once_done: std::collections::HashSet<String>,
+    /// 本局已清掉的地形图块 (层id, x, y, z)：切层重进不再长回来。
+    pub broken_tiles: std::collections::HashSet<(String, i32, i32, usize)>,
     /// 踩到楼梯后待切换的（目标楼层, 落脚点），由外层窗口执行。
     pub pending_floor: Option<(String, String)>,
+    /// 剧情结束后待切换的（目标楼层, x, y），由外层窗口执行。
+    pub pending_goto: Option<(String, i32, i32)>,
     /// 勇士朝向（RMXP 编码：2 下 / 4 左 / 6 右 / 8 上）。
     pub dir: i32,
     /// 行走动画帧（0..3）。
@@ -44,6 +48,8 @@ pub struct Dialog {
     pub page: usize,
     /// 说完要移除的实例 id（消费型 NPC：Once 永久 / 重进恢复档）。
     pub vanish: Option<String>,
+    /// 说完切层（开始地图的自动剧情）：目标层 + 坐标。
+    pub goto: Option<(String, i32, i32)>,
 }
 
 impl Playtest {
@@ -55,7 +61,9 @@ impl Playtest {
             bag: HashMap::new(),
             flags: HashMap::new(),
             once_done: std::collections::HashSet::new(),
+            broken_tiles: std::collections::HashSet::new(),
             pending_floor: None,
+            pending_goto: None,
             dir: 2,
             frame: 0,
             move_cd: 0.0,
@@ -67,6 +75,19 @@ impl Playtest {
 /// 切层前清掉本局已消费的一次性事件（门/物品/怪/NPC）。
 pub fn apply_once_done(floor: &mut Floor, once: &std::collections::HashSet<String>) {
     floor.instances.retain(|inst| !once.contains(&inst.id));
+}
+
+/// 切层前重放本局已破坏的地形（工具清掉的墙/冰/熔岩）。
+pub fn apply_broken_tiles(
+    floor: &mut Floor,
+    broken: &std::collections::HashSet<(String, i32, i32, usize)>,
+) {
+    let id = floor.id.clone();
+    for (fid, x, y, z) in broken {
+        if fid == &id {
+            floor.set_tile(*x, *y, *z, 0);
+        }
+    }
 }
 
 /// 双击打开的详情窗（格坐标）。
@@ -359,6 +380,7 @@ pub fn step_hero(
                     lines: dialog.clone(),
                     page: 0,
                     vanish,
+                    goto: None,
                 });
                 return false;
             }
@@ -761,16 +783,22 @@ fn dir_delta(dir: i32) -> (i32, i32) {
     }
 }
 
-/// 对话结束：消费型 NPC 移除；Once 记进本局记录（切层重进不再出现）。
+/// 对话结束：消费型 NPC 移除（Once 记进本局记录）；剧情要求切层就记待切。
 fn finish_dialog(floor: &mut Floor, play: &mut Playtest) {
-    let vanish = play.dialog.take().and_then(|d| d.vanish);
-    let Some(id) = vanish else { return };
-    if let Some(pos) = floor.instances.iter().position(|i| i.id == id) {
+    let Some(dialog) = play.dialog.take() else {
+        return;
+    };
+    if let Some(id) = dialog.vanish
+        && let Some(pos) = floor.instances.iter().position(|i| i.id == id)
+    {
         let lc = floor.instances[pos].lifecycle();
         floor.instances.remove(pos);
         if lc == Lifecycle::Once {
             play.once_done.insert(id);
         }
+    }
+    if let Some(goto) = dialog.goto {
+        play.pending_goto = Some(goto);
     }
 }
 
@@ -835,7 +863,38 @@ fn break_doors(
     removed
 }
 
-/// 用一件物品：血瓶加血、宝石加点、工具破坏面向/范围的门。
+/// 清掉范围内符合工具的地形图块（7630：破墙镐清墙层、破冰镐/冰冻徽章清地形层），
+/// 返回清掉的格数并记入本局地形记录（切层重进不再长回来）。
+fn clear_break_tiles(
+    floor: &mut Floor,
+    play: &mut Playtest,
+    item: &mota_core::db::Item,
+    in_range: impl Fn(i32, i32) -> bool,
+) -> usize {
+    if item.break_tiles.is_empty() {
+        return 0;
+    }
+    let z = item.break_layer.max(0) as usize;
+    let id = floor.id.clone();
+    let (w, h) = (floor.width as i32, floor.height as i32);
+    let mut n = 0;
+    for y in 0..h {
+        for x in 0..w {
+            if !in_range(x, y) {
+                continue;
+            }
+            let tid = floor.tile(x, y, z);
+            if tid != 0 && item.break_tiles.contains(&tid) {
+                floor.set_tile(x, y, z, 0);
+                play.broken_tiles.insert((id.clone(), x, y, z));
+                n += 1;
+            }
+        }
+    }
+    n
+}
+
+/// 用一件物品：血瓶加血、宝石加点、工具破坏面向/范围的门与地形。
 fn use_item(
     floor: &mut Floor,
     play: &mut Playtest,
@@ -880,30 +939,32 @@ fn use_item(
             // 状态系统还没上：先提示，不消耗
             *status = format!("{}：现在没有需要解除的状态", item.name);
         }
-        ItemKind::Tool if !item.breaks.is_empty() => {
+        ItemKind::Tool if !item.breaks.is_empty() || !item.break_tiles.is_empty() => {
             let (dx, dy) = dir_delta(play.dir);
             let (hx, hy) = play.hero;
-            let removed = if item.break_radius < 0 {
-                // 全层（地震卷轴：摧毁一层所有墙）
-                break_doors(floor, &item.breaks, |_| true)
-            } else if item.break_radius == 0 {
-                // 面前一格（破墙镐/破冰镐/冰冻徽章）
-                break_doors(floor, &item.breaks, |inst| {
-                    (inst.x, inst.y) == (hx + dx, hy + dy)
-                })
-            } else {
-                // 周身方形范围
-                let r = item.break_radius as i32;
-                break_doors(floor, &item.breaks, |inst| {
-                    (inst.x - hx).abs() <= r && (inst.y - hy).abs() <= r
-                })
+            let in_range = |x: i32, y: i32| -> bool {
+                if item.break_radius < 0 {
+                    true
+                } else if item.break_radius == 0 {
+                    (x, y) == (hx + dx, hy + dy)
+                } else {
+                    let r = item.break_radius as i32;
+                    (x - hx).abs() <= r && (y - hy).abs() <= r
+                }
             };
-            if !removed.is_empty() {
-                // 破了要一直破：记进本局一次性记录，切层重进不再出现
+            let removed = break_doors(floor, &item.breaks, |inst| in_range(inst.x, inst.y));
+            let cleared = clear_break_tiles(floor, play, item, in_range);
+            if !removed.is_empty() || cleared > 0 {
+                // 破了要一直破：事件记一次性、地形记图块（切层重进都还在）
                 for id in &removed {
                     play.once_done.insert(id.clone());
                 }
-                *status = format!("{}：破坏了 {} 处", item.name, removed.len());
+                *status = format!(
+                    "{}：破坏 {} 处，清地形 {} 格",
+                    item.name,
+                    removed.len(),
+                    cleared
+                );
                 if !item.reusable {
                     consume_item(play, &item.id);
                 }
@@ -1233,6 +1294,7 @@ mod tests {
             layers: Vec::new(),
             instances: Vec::new(),
             spawn: None,
+            intro: None,
         }
     }
 
@@ -1299,7 +1361,9 @@ mod tests {
             bag: HashMap::new(),
             flags: HashMap::new(),
             once_done: std::collections::HashSet::new(),
+            broken_tiles: std::collections::HashSet::new(),
             pending_floor: None,
+            pending_goto: None,
             dir: 2,
             frame: 0,
             move_cd: 0.0,
@@ -1546,6 +1610,8 @@ mod tests {
             kind,
             breaks: breaks.iter().map(|s| s.to_string()).collect(),
             break_radius: radius,
+            break_tiles: Vec::new(),
+            break_layer: 1,
         }
     }
 
@@ -1626,13 +1692,71 @@ mod tests {
         let mut status = String::new();
         use_item(&mut f, &mut play, &item, &mut status);
         assert!(f.instances.is_empty());
-        assert!(status.contains("破坏了 2 处"));
+        assert!(status.contains("破坏 2 处"));
         assert!(play.once_done.contains("w10") && play.once_done.contains("w20"));
         // 切层重进（重新从磁盘载入同层）也不会再出现
         f.instances.push(wall_at(1, 0));
         f.instances.push(wall_at(2, 0));
         apply_once_done(&mut f, &play.once_done);
         assert!(f.instances.is_empty());
+    }
+
+    #[test]
+    fn pickaxe_clears_wall_tile_and_remembers() {
+        let mut f = empty_floor();
+        f.layers = vec![vec![vec![395; 5]; 5], vec![vec![0; 5]; 5]];
+        f.set_tile(1, 0, 1, 389); // 面前一格是墙图块
+        let mut play = play_at(0, 0);
+        play.dir = 6;
+        play.bag.insert("pickaxe".to_string(), 1);
+        let mut item = test_item("pickaxe", mota_core::db::ItemKind::Tool, &["dark_wall"], 0);
+        item.break_tiles = vec![389, 390, 391];
+        let mut status = String::new();
+        use_item(&mut f, &mut play, &item, &mut status);
+        assert_eq!(f.tile(1, 0, 1), 0);
+        assert!(status.contains("清地形 1 格"));
+        assert!(play.broken_tiles.contains(&("t".to_string(), 1, 0, 1)));
+        // 切层重进重放破坏记录
+        f.set_tile(1, 0, 1, 389);
+        apply_broken_tiles(&mut f, &play.broken_tiles);
+        assert_eq!(f.tile(1, 0, 1), 0);
+    }
+
+    #[test]
+    fn quake_scroll_clears_all_wall_tiles() {
+        let mut f = empty_floor();
+        f.layers = vec![vec![vec![395; 5]; 5], vec![vec![0; 5]; 5]];
+        f.set_tile(1, 0, 1, 389);
+        f.set_tile(4, 4, 1, 391);
+        let mut play = play_at(0, 0);
+        play.bag.insert("quake_scroll".to_string(), 1);
+        let mut item = test_item(
+            "quake_scroll",
+            mota_core::db::ItemKind::Tool,
+            &["dark_wall"],
+            -1,
+        );
+        item.break_tiles = vec![389, 390, 391];
+        let mut status = String::new();
+        use_item(&mut f, &mut play, &item, &mut status);
+        assert_eq!(f.tile(1, 0, 1), 0);
+        assert_eq!(f.tile(4, 4, 1), 0);
+        assert_eq!(play.broken_tiles.len(), 2);
+    }
+
+    #[test]
+    fn intro_goto_sets_pending_after_dialog() {
+        let mut f = empty_floor();
+        let mut play = play_at(0, 0);
+        play.dialog = Some(Dialog {
+            lines: vec!["开场白".to_string()],
+            page: 0,
+            vanish: None,
+            goto: Some(("m01".to_string(), 12, 1)),
+        });
+        finish_dialog(&mut f, &mut play);
+        assert_eq!(play.pending_goto, Some(("m01".to_string(), 12, 1)));
+        assert!(play.dialog.is_none());
     }
 
     fn barriers_map() -> HashMap<String, mota_core::db::Barrier> {

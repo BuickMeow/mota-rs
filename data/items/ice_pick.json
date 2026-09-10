@@ -16,5 +16,9 @@
   "breaks": [
     "dark_ice"
   ],
-  "break_radius": 0
+  "break_radius": 0,
+  "break_tiles": [
+    399
+  ],
+  "break_layer": 2
 }

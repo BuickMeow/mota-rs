@@ -1,0 +1,14 @@
+{
+  "id": "dark_wall_free",
+  "name": "徒手暗墙",
+  "consume": false,
+  "free": true,
+  "description": "徒手可拆：撞一下就没",
+  "sprite": {
+    "file": "203-other03",
+    "hue": 0,
+    "col": 1,
+    "row": 0,
+    "opacity": 255
+  }
+}

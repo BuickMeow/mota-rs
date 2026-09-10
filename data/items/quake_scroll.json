@@ -16,5 +16,11 @@
   "breaks": [
     "dark_wall"
   ],
-  "break_radius": -1
+  "break_radius": -1,
+  "break_tiles": [
+    389,
+    390,
+    391
+  ],
+  "break_layer": 1
 }

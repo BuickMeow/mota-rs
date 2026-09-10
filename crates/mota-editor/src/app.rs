@@ -29,6 +29,7 @@ fn blank_floor() -> Floor {
         layers: vec![vec![vec![GROUND_TILE; 20]; 15]],
         instances: Vec::new(),
         spawn: Some((10, 13)),
+        intro: None,
     }
 }
 
@@ -293,6 +294,18 @@ impl EditorApp {
             }
             let spawn = self.floor.spawn;
             self.play = Playtest::start(spawn, self.hero.clone());
+            // 开始地图的自动剧情：进游戏直接弹对话，播完由 pending_goto 切层
+            if let Some(intro) = &self.floor.intro {
+                self.play.dialog = Some(canvas::Dialog {
+                    lines: intro.lines.clone(),
+                    page: 0,
+                    vanish: None,
+                    goto: intro
+                        .to_floor
+                        .as_ref()
+                        .map(|f| (f.clone(), intro.to_x, intro.to_y)),
+                });
+            }
             // 游戏窗口纹理随开随建（副 Context 下持有，不复用主窗口的）
             self.play_tex = None;
             self.play_placed = false;
@@ -375,31 +388,60 @@ impl EditorApp {
         if let Some((to_floor, to_landing)) = self.play.pending_floor.take() {
             self.play_switch_floor(&to_floor, &to_landing);
         }
+        // 自动剧情结束：切到目标层的指定坐标
+        if let Some((to_floor, x, y)) = self.play.pending_goto.take() {
+            self.play_goto_floor(&to_floor, x, y);
+        }
     }
 
     /// 试玩中切层：读目标楼层 JSON，落到指定落脚点；一次性事件沿用本局记录。
     fn play_switch_floor(&mut self, stem: &str, landing: &str) {
+        let Some(mut floor) = self.load_play_floor(stem) else {
+            return;
+        };
+        let pos = floor.landing_pos(landing).or(floor.spawn).unwrap_or((0, 0));
+        self.apply_play_state(&mut floor);
+        self.floor = floor;
+        self.play.hero = pos;
+        self.play_placed = false; // 新楼层尺寸可能不同，允许重算窗口
+        self.status = format!("切层→{stem}:{landing} ({},{})", pos.0, pos.1);
+    }
+
+    /// 试玩中按坐标切层（开始地图自动剧情的落点）。
+    fn play_goto_floor(&mut self, stem: &str, x: i32, y: i32) {
+        let Some(mut floor) = self.load_play_floor(stem) else {
+            return;
+        };
+        self.apply_play_state(&mut floor);
+        self.floor = floor;
+        self.play.hero = (x, y);
+        self.play_placed = false;
+        self.status = format!("剧情→{stem} ({x},{y})");
+    }
+
+    /// 读目标楼层 JSON（试玩切层共用）。
+    fn load_play_floor(&mut self, stem: &str) -> Option<Floor> {
         let path = PathBuf::from("data/floors").join(format!("{stem}.json"));
         let text = match std::fs::read_to_string(&path) {
             Ok(t) => t,
             Err(e) => {
                 self.status = format!("切层失败 {stem}：{e}");
-                return;
+                return None;
             }
         };
-        let mut floor: Floor = match serde_json::from_str(&text) {
-            Ok(f) => f,
+        match serde_json::from_str(&text) {
+            Ok(f) => Some(f),
             Err(e) => {
                 self.status = format!("切层解析失败 {stem}：{e}");
-                return;
+                None
             }
-        };
-        canvas::apply_once_done(&mut floor, &self.play.once_done);
-        let pos = floor.landing_pos(landing).or(floor.spawn).unwrap_or((0, 0));
-        self.floor = floor;
-        self.play.hero = pos;
-        self.play_placed = false; // 新楼层尺寸可能不同，允许重算窗口
-        self.status = format!("切层→{stem}:{landing} ({},{})", pos.0, pos.1);
+        }
+    }
+
+    /// 重放本局进程：消费掉的一次性事件 + 破坏过的地形。
+    fn apply_play_state(&self, floor: &mut Floor) {
+        canvas::apply_once_done(floor, &self.play.once_done);
+        canvas::apply_broken_tiles(floor, &self.play.broken_tiles);
     }
 }
 

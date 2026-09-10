@@ -16,5 +16,11 @@
   "breaks": [
     "dark_lava"
   ],
-  "break_radius": 0
+  "break_radius": 0,
+  "break_tiles": [
+    398,
+    48,
+    95
+  ],
+  "break_layer": 2
 }

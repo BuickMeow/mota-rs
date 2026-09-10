@@ -183,6 +183,23 @@ pub struct Floor {
     /// 勇士出生/重进落点。
     #[serde(default)]
     pub spawn: Option<(i32, i32)>,
+    /// 进层自动剧情（开始地图用）：先自动播对话，播完切层。
+    #[serde(default)]
+    pub intro: Option<FloorIntro>,
+}
+
+/// 自动剧情：开始地图（m02）那段无法跳过的开场白 + 结束后的落点。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FloorIntro {
+    /// 自动播放的对话（原文每一行一条）。
+    pub lines: Vec<String>,
+    /// 播完切到哪层（None = 原地不切）。
+    #[serde(default)]
+    pub to_floor: Option<String>,
+    #[serde(default)]
+    pub to_x: i32,
+    #[serde(default)]
+    pub to_y: i32,
 }
 
 impl Floor {
@@ -197,6 +214,19 @@ impl Floor {
             .and_then(|r| r.get(x as usize))
             .copied()
             .unwrap_or(0)
+    }
+
+    /// 写图块号；越界或缺层静默跳过（破坏地形用）。
+    pub fn set_tile(&mut self, x: i32, y: i32, z: usize, tid: i32) {
+        if x < 0 || y < 0 {
+            return;
+        }
+        if let Some(layer) = self.layers.get_mut(z)
+            && let Some(row) = layer.get_mut(y as usize)
+            && let Some(cell) = row.get_mut(x as usize)
+        {
+            *cell = tid;
+        }
     }
 
     /// 按名找落脚点（楼梯的另一端）；没有就返回 None，不回落（显式摆放优先）。
@@ -309,6 +339,7 @@ mod tests {
                 step_anime: false,
             }],
             spawn: Some((0, 0)),
+            intro: None,
         };
         assert_eq!(f.landing_pos("入口"), Some((2, 3)));
         // 没摆就是 None，不回落到 spawn

@@ -329,6 +329,16 @@ pub struct Item {
     /// 破坏范围（切比雪夫半径；<0=整层，0=只打勇士面前一格，>0=以勇士为中心的方形）。
     #[serde(default)]
     pub break_radius: i64,
+    /// 工具可清除的地形图块 id（7630：墙 389-391、冰 399、熔岩 398/48/95）。
+    #[serde(default)]
+    pub break_tiles: Vec<i32>,
+    /// 清除的图块层（0 背景 / 1 墙层 / 2 熔岩冰层），默认墙层 1。
+    #[serde(default = "break_layer_one")]
+    pub break_layer: i64,
+}
+
+fn break_layer_one() -> i64 {
+    1
 }
 
 fn default_true() -> bool {

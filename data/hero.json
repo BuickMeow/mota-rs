@@ -2,9 +2,9 @@
   "name": "勇士",
   "hp": 1000,
   "hp_max": 1000,
-  "atk": 10,
-  "def": 10,
-  "mdef": 0,
+  "atk": 100,
+  "def": 100,
+  "mdef": 10,
   "level": 1,
   "exp": 0,
   "gold": 0
