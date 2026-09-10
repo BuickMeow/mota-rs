@@ -1,0 +1,25 @@
+{
+  "id": "skeleton_warrior",
+  "name": "骷髅武士",
+  "hp": 180,
+  "atk": 448,
+  "def": 400,
+  "mdef": 104,
+  "gold": 5,
+  "exp": 5,
+  "battler": "044-04",
+  "hue": 0,
+  "sprite": {
+    "file": "044-Monster14",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [
+    "magic_atk",
+    "combo:2",
+    "armor_break"
+  ],
+  "extra": {}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "stair_down",
+  "name": "下楼器",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "去到当前楼层的下一层（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 1,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

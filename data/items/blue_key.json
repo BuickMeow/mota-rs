@@ -1,0 +1,16 @@
+{
+  "id": "blue_key",
+  "name": "蓝钥匙",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来开蓝色的门",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 1,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "key"
+}

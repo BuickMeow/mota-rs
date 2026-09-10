@@ -1,0 +1,16 @@
+{
+  "id": "iron_sword",
+  "name": "铁剑",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "最常见的剑(装备物品)",
+  "sprite": {
+    "file": "104-item04",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "equipment:weapon:10,0,0"
+}

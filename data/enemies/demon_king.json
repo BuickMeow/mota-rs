@@ -1,0 +1,23 @@
+{
+  "id": "demon_king",
+  "name": "魔王",
+  "hp": 1200,
+  "atk": 500,
+  "def": 200,
+  "mdef": 123,
+  "gold": 24,
+  "exp": 24,
+  "battler": "038-01",
+  "hue": 0,
+  "sprite": {
+    "file": "038-Monster08",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "repel:38"
+  ],
+  "extra": {}
+}

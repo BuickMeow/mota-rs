@@ -1,0 +1,25 @@
+{
+  "id": "key_bearer",
+  "name": "钥匙携带者",
+  "hp": 840,
+  "atk": 0,
+  "def": 0,
+  "mdef": 100,
+  "gold": 0,
+  "exp": 0,
+  "battler": "045-01",
+  "hue": 0,
+  "sprite": {
+    "file": "045-Monster15",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "mimic"
+  ],
+  "extra": {
+    "drop": "red_key"
+  }
+}

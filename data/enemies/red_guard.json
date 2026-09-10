@@ -1,0 +1,23 @@
+{
+  "id": "red_guard",
+  "name": "红卫兵",
+  "hp": 200,
+  "atk": 140,
+  "def": 60,
+  "mdef": 127,
+  "gold": 18,
+  "exp": 18,
+  "battler": "036-03",
+  "hue": 0,
+  "sprite": {
+    "file": "036-Monster06",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "hate"
+  ],
+  "extra": {}
+}

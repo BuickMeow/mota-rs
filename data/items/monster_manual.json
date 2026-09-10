@@ -1,0 +1,16 @@
+{
+  "id": "monster_manual",
+  "name": "怪物手册",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "持有后可以察看怪物信息",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

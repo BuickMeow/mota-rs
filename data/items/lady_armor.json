@@ -1,0 +1,16 @@
+{
+  "id": "lady_armor",
+  "name": "女款铠甲",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "女性常穿的铠甲(装备物品)",
+  "sprite": {
+    "file": "106-item06",
+    "hue": 0,
+    "col": 3,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "equipment:armor:0,10,5"
+}

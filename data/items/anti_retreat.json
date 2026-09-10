@@ -1,0 +1,16 @@
+{
+  "id": "anti_retreat",
+  "name": "防护板＋脚镣",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "持有后可以阻止怪物退敌",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 3,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

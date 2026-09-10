@@ -1,0 +1,13 @@
+{
+  "id": "dark_ice",
+  "name": "暗冰",
+  "consume": false,
+  "description": "可被破冰镐（消耗）破坏",
+  "sprite": {
+    "file": "205-other05",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "god_sword",
+  "name": "神者之剑",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "将面前的怪物变成绿头怪（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 2,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

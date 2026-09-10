@@ -1,0 +1,23 @@
+{
+  "id": "soul_warrior",
+  "name": "灵魂武士",
+  "hp": 100,
+  "atk": 501,
+  "def": 400,
+  "mdef": 116,
+  "gold": 10,
+  "exp": 10,
+  "battler": "045-03",
+  "hue": 0,
+  "sprite": {
+    "file": "045-Monster15",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "counter"
+  ],
+  "extra": {}
+}

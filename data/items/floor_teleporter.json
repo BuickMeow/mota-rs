@@ -1,0 +1,16 @@
+{
+  "id": "floor_teleporter",
+  "name": "楼层传送器",
+  "auto_use": false,
+  "reusable": true,
+  "passive": false,
+  "description": "在访问过的楼层间任意往来（快捷键g）",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 2,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

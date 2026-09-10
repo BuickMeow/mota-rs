@@ -1,0 +1,16 @@
+{
+  "id": "detector",
+  "name": "物种探知器",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来侦测潜伏的怪物",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

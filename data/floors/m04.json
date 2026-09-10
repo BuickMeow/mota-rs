@@ -1,0 +1,2103 @@
+{
+  "height": 15,
+  "id": "m04",
+  "instances": [
+    {
+      "id": "m04_e001",
+      "lifecycle": null,
+      "template": {
+        "kind": "stair_down",
+        "to_floor": "m01",
+        "to_landing": "上楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 8,
+      "walk_anime": true
+    },
+    {
+      "id": "m04_land_down",
+      "lifecycle": null,
+      "template": {
+        "kind": "landing",
+        "name": "下楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 8
+    },
+    {
+      "id": "m04_e002",
+      "lifecycle": null,
+      "template": {
+        "kind": "stair_up",
+        "to_floor": "m05",
+        "to_landing": "下楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 12,
+      "walk_anime": true
+    },
+    {
+      "id": "m04_land_up",
+      "lifecycle": null,
+      "template": {
+        "kind": "landing",
+        "name": "上楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 12
+    },
+    {
+      "id": "m04_e004",
+      "lifecycle": null,
+      "template": {
+        "kind": "landing",
+        "name": "上楼梯·副"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 7
+    },
+    {
+      "id": "m04_e005",
+      "lifecycle": null,
+      "template": {
+        "kind": "landing",
+        "name": "下楼梯·副"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 13
+    },
+    {
+      "id": "m04_e006",
+      "lifecycle": null,
+      "template": {
+        "item_id": "yellow_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 2
+    },
+    {
+      "id": "m04_e007",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 2
+    },
+    {
+      "id": "m04_e008",
+      "lifecycle": null,
+      "template": {
+        "item_id": "red_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 2
+    },
+    {
+      "id": "m04_e009",
+      "lifecycle": null,
+      "template": {
+        "item_id": "amulet",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 13,
+      "y": 10
+    },
+    {
+      "id": "m04_e010",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_gem",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 4
+    },
+    {
+      "id": "m04_e011",
+      "lifecycle": null,
+      "template": {
+        "item_id": "red_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 3
+    },
+    {
+      "id": "m04_e012",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 3
+    },
+    {
+      "id": "m04_e013",
+      "lifecycle": null,
+      "template": {
+        "item_id": "yellow_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 3
+    },
+    {
+      "id": "m04_e014",
+      "lifecycle": null,
+      "template": {
+        "door_id": "iron",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 1
+    },
+    {
+      "id": "m04_e015",
+      "lifecycle": null,
+      "template": {
+        "item_id": "green_gem",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 4
+    },
+    {
+      "id": "m04_e016",
+      "lifecycle": null,
+      "template": {
+        "item_id": "big_yellow_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 6
+    },
+    {
+      "id": "m04_e017",
+      "lifecycle": null,
+      "template": {
+        "door_id": "yellow",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 1
+    },
+    {
+      "id": "m04_e018",
+      "lifecycle": null,
+      "template": {
+        "item_id": "ice_pick",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 9
+    },
+    {
+      "id": "m04_e019",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "super_swordsman"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 7,
+      "y": 1,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e020",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 4,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e021",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "imp"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 9,
+      "y": 1,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e022",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "dark_lord"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 8,
+      "y": 3,
+      "walk_anime": true,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e023",
+      "lifecycle": null,
+      "template": {
+        "item_id": "monster_manual",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 8,
+      "y": 9
+    },
+    {
+      "id": "m04_e024",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[仙子]怪物的事件名称必须是\"怪物XXX\",",
+          "XXX是怪物编号，不足3位左面补0",
+          "不想被圣锤炸弹消灭的怪物",
+          "事件名称为\"怪物XXXb\",最后多加小写b",
+          "设计魔塔时地图名称必须以\"a:b\"命名。a为魔塔编",
+          "号，b为第层数，在公共事件初始化中指定。",
+          "记住！地图名称绝不能重复！！！\\m[仙子]",
+          "\\m[仙子]每个地图中上楼梯必须为事件id=2",
+          "          下楼梯必须为事件id=1",
+          "          每层的并行处理必须为事件id=3",
+          "\\m[仙子]好了，楼梯和怪物都已经可以自行判断了",
+          "请自行察看效果"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 3,
+        "opacity": 255
+      },
+      "x": 7,
+      "y": 8,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e025",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton_warrior"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 2,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e026",
+      "lifecycle": null,
+      "template": {
+        "item_id": "dialog_manual",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 9
+    },
+    {
+      "id": "m04_e027",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]现在开启埋伏的领域怪物。"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 8,
+      "y": 5,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e028",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_ice",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 12,
+      "walk_anime": true
+    },
+    {
+      "id": "m04_e029",
+      "lifecycle": null,
+      "template": {
+        "item_id": "nature_boots",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 12,
+      "y": 1
+    },
+    {
+      "id": "m04_e030",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]这是自然之靴，",
+          "可以安然无恙地通过各种路障。"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 12,
+      "y": 2,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e031",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_wall",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 6
+    },
+    {
+      "id": "m04_e032",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_wall",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "203-other03",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 8,
+      "y": 10
+    },
+    {
+      "id": "m04_e033",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_wall",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "203-other03",
+        "hue": 0,
+        "col": 2,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 11,
+      "y": 10
+    },
+    {
+      "id": "m04_e034",
+      "lifecycle": null,
+      "template": {
+        "item_id": "stair_up",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 8
+    },
+    {
+      "id": "m04_e035",
+      "lifecycle": null,
+      "template": {
+        "item_id": "stair_down",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 8
+    },
+    {
+      "id": "m04_e036",
+      "lifecycle": null,
+      "template": {
+        "item_id": "symmetry_flier",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 8
+    },
+    {
+      "id": "m04_e037",
+      "lifecycle": null,
+      "template": {
+        "door_id": "green",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 1
+    },
+    {
+      "id": "m04_e038",
+      "lifecycle": null,
+      "template": {
+        "item_id": "floor_teleporter",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 7,
+      "y": 9
+    },
+    {
+      "id": "m04_e039",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton_mage"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 2,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e040",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_lava",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 12,
+      "walk_anime": true
+    },
+    {
+      "id": "m04_e041",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton_marshal"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 4,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e042",
+      "lifecycle": null,
+      "template": {
+        "barrier_id": "curse_8",
+        "kind": "barrier"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 6,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e043",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]右边是诅咒网！",
+          "中了诅咒后杀怪没有任何经验和金币",
+          "再右边是解诅咒的药瓶@clue"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 14,
+      "y": 7,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e044",
+      "lifecycle": null,
+      "template": {
+        "item_id": "curse_cure",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 6
+    },
+    {
+      "id": "m04_e045",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]里面都是宝物",
+          "\\m[老人]地图第1层为背景，包括各种可通行地形",
+          "地图第2层专画墙，以便地震卷轴使用",
+          "地图第3层画其他地形，熔岩、冰必须在此层",
+          "\\m[老人]\"暗墙\"、\"暗冰\"、\"暗熔\"作为事件名称,",
+          "就可以被破墙镐、破冰镐、冷冻徽章消去",
+          "“暗墙”还能被地震卷轴消去"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 12,
+      "y": 10,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e046",
+      "lifecycle": null,
+      "template": {
+        "item_id": "green_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 2
+    },
+    {
+      "id": "m04_e047",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[铁匠]加攻击的编号到1-50为止",
+          "加防御的编号从51-100为止",
+          "加魔防的编号从151-200为止",
+          "加等级的编号从201开始",
+          "\\m[铁匠]武器和防具可以在数据库里添加",
+          "武器的动画决定角色的攻击动画",
+          "角色的职业决定武器和防具是否可以装备",
+          "具体见数据库里武器、防具、职业"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 1,
+        "opacity": 255
+      },
+      "x": 13,
+      "y": 4,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e048",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[杰克]攻防超过999的怪物在开始地图中事件1第",
+          "2页指定（已有2个例子）",
+          "需要指出的是，名称比较长的怪物也要用脚本指",
+          "定。例子同上。"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 2,
+        "opacity": 255
+      },
+      "x": 10,
+      "y": 7,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e050",
+      "lifecycle": null,
+      "template": {
+        "item_id": "iron_sword",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 4
+    },
+    {
+      "id": "m04_e051",
+      "lifecycle": null,
+      "template": {
+        "item_id": "iron_shield",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 3
+    },
+    {
+      "id": "m04_e052",
+      "lifecycle": null,
+      "template": {
+        "item_id": "lucky_coin",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 10
+    },
+    {
+      "id": "m04_e053",
+      "lifecycle": null,
+      "template": {
+        "item_id": "quake_scroll",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 9
+    },
+    {
+      "id": "m04_e054",
+      "lifecycle": null,
+      "template": {
+        "item_id": "pickaxe",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 9
+    },
+    {
+      "id": "m04_e055",
+      "lifecycle": null,
+      "template": {
+        "item_id": "holy_cross",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 10
+    },
+    {
+      "id": "m04_e056",
+      "lifecycle": null,
+      "template": {
+        "item_id": "freeze_badge",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 9
+    },
+    {
+      "id": "m04_e057",
+      "lifecycle": null,
+      "template": {
+        "item_id": "holy_hammer",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 7
+    },
+    {
+      "id": "m04_e058",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_wall",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "202-other02",
+        "hue": 0,
+        "col": 3,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 11,
+      "y": 12
+    },
+    {
+      "id": "m04_e059",
+      "lifecycle": null,
+      "template": {
+        "item_id": "bomb",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 7
+    },
+    {
+      "id": "m04_e060",
+      "lifecycle": null,
+      "template": {
+        "item_id": "iron_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 2
+    },
+    {
+      "id": "m04_e061",
+      "lifecycle": null,
+      "template": {
+        "item_id": "green_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 3
+    },
+    {
+      "id": "m04_e062",
+      "lifecycle": null,
+      "template": {
+        "item_id": "yellow_gem",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 4
+    },
+    {
+      "id": "m04_e063",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[\\n[2]]你救了我，请让我为你冲锋吧！",
+          "按U键就可以使用我了"
+        ],
+        "kind": "npc",
+        "route": []
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "016-Braver06",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 8,
+      "y": 11,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e064",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "cursed_wizard"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 9,
+      "y": 5,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e065",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "soul_warrior"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 7,
+      "y": 5,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e066",
+      "lifecycle": "respawn_on_reenter",
+      "template": {
+        "kind": "monster",
+        "monster_id": "electric_slime"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 12,
+      "step_anime": true
+    },
+    {
+      "id": "m04_e067",
+      "lifecycle": null,
+      "template": {
+        "item_id": "god_sword",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 10
+    },
+    {
+      "id": "m04_e068",
+      "lifecycle": null,
+      "template": {
+        "item_id": "lady_armor",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 6,
+      "y": 13
+    },
+    {
+      "id": "m04_e069",
+      "lifecycle": null,
+      "template": {
+        "item_id": "gold_dagger",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 7,
+      "y": 13
+    },
+    {
+      "id": "m04_e070",
+      "lifecycle": null,
+      "template": {
+        "door_id": "blue",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 1
+    },
+    {
+      "id": "m04_e071",
+      "lifecycle": null,
+      "template": {
+        "door_id": "red",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 16,
+      "y": 1
+    },
+    {
+      "id": "m04_e072",
+      "lifecycle": null,
+      "template": {
+        "item_id": "detector",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 10
+    },
+    {
+      "id": "m04_e073",
+      "lifecycle": null,
+      "template": {
+        "item_id": "red_gem",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 4
+    }
+  ],
+  "layers": [
+    [
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        425,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        424,
+        425,
+        425,
+        425,
+        426,
+        424,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        395,
+        426
+      ],
+      [
+        432,
+        433,
+        433,
+        433,
+        434,
+        432,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        433,
+        434
+      ]
+    ],
+    [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        390,
+        390,
+        390,
+        390,
+        0,
+        390,
+        0,
+        0,
+        0,
+        0,
+        391,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        391,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        391,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        391,
+        391,
+        391,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        389,
+        389,
+        0,
+        389,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        389,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        389,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        389,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        399,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        399,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        399,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        399,
+        399,
+        399,
+        399,
+        399,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        398,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        398,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        398,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        398,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        398,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        428,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  ],
+  "name": "1:1",
+  "spawn": null,
+  "width": 20
+}

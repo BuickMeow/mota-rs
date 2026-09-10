@@ -1,0 +1,23 @@
+{
+  "id": "super_swordsman",
+  "name": "超级剑士",
+  "hp": 120,
+  "atk": 500,
+  "def": 500,
+  "mdef": 115,
+  "gold": 7,
+  "exp": 7,
+  "battler": "036-04",
+  "hue": 290,
+  "sprite": {
+    "file": "041-Monster11",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "combo:4"
+  ],
+  "extra": {}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "nature_boots",
+  "name": "自然之靴",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "安然无恙地通过各种负面地形",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

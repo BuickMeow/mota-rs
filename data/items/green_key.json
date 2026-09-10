@@ -1,0 +1,16 @@
+{
+  "id": "green_key",
+  "name": "绿钥匙",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来开绿色的门",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 3,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "key"
+}

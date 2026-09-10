@@ -1,0 +1,16 @@
+{
+  "id": "big_yellow_key",
+  "name": "大黄门钥匙",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "可以打开一层中所有的黄门（消耗物品）",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 2,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

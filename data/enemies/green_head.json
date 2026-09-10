@@ -1,0 +1,21 @@
+{
+  "id": "green_head",
+  "name": "绿头怪",
+  "hp": 1,
+  "atk": 1,
+  "def": 1,
+  "mdef": 100,
+  "gold": 0,
+  "exp": 1,
+  "battler": "031-01",
+  "hue": 0,
+  "sprite": {
+    "file": "031-Monster01",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

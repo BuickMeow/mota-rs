@@ -1,0 +1,23 @@
+{
+  "id": "weak_bat",
+  "name": "衰蝙蝠",
+  "hp": 30,
+  "atk": 23,
+  "def": 2,
+  "mdef": 100,
+  "gold": 2,
+  "exp": 2,
+  "battler": "043-03",
+  "hue": 0,
+  "sprite": {
+    "file": "043-Monster13",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "weak"
+  ],
+  "extra": {}
+}

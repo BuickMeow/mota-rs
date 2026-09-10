@@ -1,0 +1,21 @@
+{
+  "id": "octopus",
+  "name": "章鱼",
+  "hp": 99999,
+  "atk": 999,
+  "def": 999,
+  "mdef": 100,
+  "gold": 0,
+  "exp": 0,
+  "battler": "039-02",
+  "hue": 0,
+  "sprite": {
+    "file": "039-Monster09",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

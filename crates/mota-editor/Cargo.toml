@@ -1,0 +1,17 @@
+[package]
+name = "mota-editor"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "mota-editor"
+path = "src/main.rs"
+
+[dependencies]
+eframe = "0.36"
+egui_material_icons = "0.8"
+image = "0.25"
+mota-core = { path = "../mota-core" }
+serde = "1"
+serde_json = "1"
+rfd = "0.17"

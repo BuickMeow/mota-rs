@@ -1,0 +1,16 @@
+{
+  "id": "holy_hammer",
+  "name": "圣锤",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "直接消灭玩家四周的非boss级怪物（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 1,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

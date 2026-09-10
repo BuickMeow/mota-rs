@@ -1,0 +1,16 @@
+{
+  "id": "candle",
+  "name": "蜡烛",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "照亮勇士的周围",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 3,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

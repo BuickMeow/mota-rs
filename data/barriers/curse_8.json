@@ -1,0 +1,15 @@
+{
+  "id": "curse_8",
+  "name": "诅咒路障",
+  "code": 8,
+  "damage": 0,
+  "effect": "flag",
+  "sprite": {
+    "file": "002-npc02",
+    "hue": 180,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "description": "Common015变量21=8分支：开关16"
+}

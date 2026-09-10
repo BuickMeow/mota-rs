@@ -1,0 +1,16 @@
+{
+  "id": "red_gem",
+  "name": "红宝石",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加勇士的攻击（消耗物品，快捷键t）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "gem:atk:1"
+}

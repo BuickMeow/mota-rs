@@ -1,0 +1,16 @@
+{
+  "id": "antidote",
+  "name": "解毒药水",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来消除中毒状态的药水（消耗物品，快捷键E）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "cure:poison"
+}

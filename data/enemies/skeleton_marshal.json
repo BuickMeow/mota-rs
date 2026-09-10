@@ -1,0 +1,23 @@
+{
+  "id": "skeleton_marshal",
+  "name": "骷髅元帅",
+  "hp": 800,
+  "atk": 400,
+  "def": 500,
+  "mdef": 0,
+  "gold": 0,
+  "exp": 0,
+  "battler": "044-02",
+  "hue": 0,
+  "sprite": {
+    "file": "044-Monster14",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "invincible"
+  ],
+  "extra": {}
+}

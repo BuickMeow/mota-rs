@@ -1,0 +1,16 @@
+{
+  "id": "gold_dagger",
+  "name": "黄金短剑",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "女性常用的防身用品(装备物品)",
+  "sprite": {
+    "file": "106-item06",
+    "hue": 0,
+    "col": 2,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "equipment:weapon:10,0,0"
+}

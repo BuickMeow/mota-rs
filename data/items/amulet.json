@@ -1,0 +1,16 @@
+{
+  "id": "amulet",
+  "name": "护符",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "持有后不受怪物领域的伤害",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 2,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

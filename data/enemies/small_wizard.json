@@ -1,0 +1,24 @@
+{
+  "id": "small_wizard",
+  "name": "小巫师×××",
+  "hp": 1000,
+  "atk": 300,
+  "def": 100,
+  "mdef": 100,
+  "gold": 0,
+  "exp": 0,
+  "battler": "035-03",
+  "hue": 0,
+  "sprite": {
+    "file": "035-Monster05",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "magic_atk",
+    "transform"
+  ],
+  "extra": {}
+}

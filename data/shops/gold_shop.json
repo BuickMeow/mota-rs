@@ -1,0 +1,9 @@
+{
+  "id": "gold_shop",
+  "name": "金币商店",
+  "entries": [
+    { "kind": "atk", "item": "", "amount": 2, "cost_gold": 50, "cost_exp": 0 },
+    { "kind": "def", "item": "", "amount": 2, "cost_gold": 50, "cost_exp": 0 },
+    { "kind": "hp", "item": "", "amount": 200, "cost_gold": 50, "cost_exp": 0 }
+  ]
+}

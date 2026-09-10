@@ -1,0 +1,21 @@
+{
+  "id": "yellow_knight",
+  "name": "黄骑士",
+  "hp": 230,
+  "atk": 135,
+  "def": 50,
+  "mdef": 100,
+  "gold": 19,
+  "exp": 19,
+  "battler": "037-02",
+  "hue": 0,
+  "sprite": {
+    "file": "037-Monster07",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

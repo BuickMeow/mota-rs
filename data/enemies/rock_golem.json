@@ -1,0 +1,23 @@
+{
+  "id": "rock_golem",
+  "name": "石头怪",
+  "hp": 50,
+  "atk": 29,
+  "def": 50,
+  "mdef": 102,
+  "gold": 4,
+  "exp": 4,
+  "battler": "034-03",
+  "hue": 0,
+  "sprite": {
+    "file": "043-Monster13",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [
+    "solid"
+  ],
+  "extra": {}
+}

@@ -1,0 +1,23 @@
+{
+  "id": "ice_bat",
+  "name": "冰蝙蝠",
+  "hp": 40,
+  "atk": 26,
+  "def": 3,
+  "mdef": 100,
+  "gold": 3,
+  "exp": 3,
+  "battler": "032-03",
+  "hue": 210,
+  "sprite": {
+    "file": "032-Monster02",
+    "hue": 220,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "slow"
+  ],
+  "extra": {}
+}

@@ -1,0 +1,13 @@
+{
+  "id": "flower",
+  "name": "花门",
+  "consume": false,
+  "description": "条件墙：走剧情开关显隐，不吃钥匙",
+  "sprite": {
+    "file": "203-other03",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "poison_bat",
+  "name": "毒蝙蝠",
+  "hp": 20,
+  "atk": 20,
+  "def": 1,
+  "mdef": 95,
+  "gold": 10,
+  "exp": 1,
+  "battler": "032-03",
+  "hue": 120,
+  "sprite": {
+    "file": "032-Monster02",
+    "hue": 120,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "poison"
+  ],
+  "extra": {}
+}

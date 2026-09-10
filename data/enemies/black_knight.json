@@ -1,0 +1,24 @@
+{
+  "id": "black_knight",
+  "name": "黑骑士",
+  "hp": 375,
+  "atk": 185,
+  "def": 95,
+  "mdef": 100,
+  "gold": 23,
+  "exp": 23,
+  "battler": "037-04",
+  "hue": 0,
+  "sprite": {
+    "file": "037-Monster07",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [
+    "purify",
+    "thief"
+  ],
+  "extra": {}
+}

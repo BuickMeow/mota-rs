@@ -1,0 +1,16 @@
+{
+  "id": "holy_cross",
+  "name": "圣十字架",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "携带后无视怪物的无敌属性",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 3,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "dragon",
+  "name": "魔龙",
+  "hp": 99999,
+  "atk": 999,
+  "def": 999,
+  "mdef": 100,
+  "gold": 26,
+  "exp": 26,
+  "battler": "039-01",
+  "hue": 0,
+  "sprite": {
+    "file": "039-Monster09",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

@@ -1,0 +1,15 @@
+{
+  "id": "net_4",
+  "name": "网",
+  "code": 4,
+  "damage": 100,
+  "effect": "hurt",
+  "sprite": {
+    "file": "002-npc02",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "description": "Common015变量21=4分支：扣100血"
+}

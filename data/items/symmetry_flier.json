@@ -1,0 +1,16 @@
+{
+  "id": "symmetry_flier",
+  "name": "中心对称飞行器",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "飞到勇士当前位置的中心对称点（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

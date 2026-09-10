@@ -1,0 +1,16 @@
+{
+  "id": "stair_up",
+  "name": "上楼器",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "去到当前楼层的上一层（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 2,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "red_potion",
+  "name": "红血瓶",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加生命75点（消耗物品，快捷键1）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "potion:75"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "big_bat",
+  "name": "大蝙蝠",
+  "hp": 90,
+  "atk": 62,
+  "def": 0,
+  "mdef": 125,
+  "gold": 12,
+  "exp": 12,
+  "battler": "032-02",
+  "hue": 0,
+  "sprite": {
+    "file": "032-Monster02",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "degenerate"
+  ],
+  "extra": {}
+}

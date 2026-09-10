@@ -1,0 +1,16 @@
+{
+  "id": "anything_door",
+  "name": "随意门",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "把勇士面向的一堵特殊的墙、一扇门或路障变成黄门",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 2,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

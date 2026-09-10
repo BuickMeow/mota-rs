@@ -1,0 +1,23 @@
+{
+  "id": "blue_mage",
+  "name": "蓝法师",
+  "hp": 120,
+  "atk": 90,
+  "def": 35,
+  "mdef": 117,
+  "gold": 14,
+  "exp": 14,
+  "battler": "035-01",
+  "hue": 0,
+  "sprite": {
+    "file": "035-Monster05",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "magic_atk"
+  ],
+  "extra": {}
+}

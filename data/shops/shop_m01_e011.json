@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "amount": 1,
+      "cost_exp": 0,
+      "cost_gold": 50,
+      "item": "blue_key",
+      "kind": "item"
+    },
+    {
+      "amount": 1,
+      "cost_exp": 0,
+      "cost_gold": 110,
+      "item": "red_key",
+      "kind": "item"
+    }
+  ],
+  "id": "shop_m01_e011",
+  "name": "商店"
+}

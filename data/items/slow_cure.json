@@ -1,0 +1,16 @@
+{
+  "id": "slow_cure",
+  "name": "解慢药水",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来消除迟缓状态的药水（消耗物品，快捷键E）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 2,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "cure:slow"
+}

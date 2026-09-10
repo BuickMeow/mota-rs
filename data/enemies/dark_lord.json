@@ -1,0 +1,23 @@
+{
+  "id": "dark_lord",
+  "name": "黑衣魔王",
+  "hp": 500,
+  "atk": 100,
+  "def": 100,
+  "mdef": 0,
+  "gold": 29,
+  "exp": 29,
+  "battler": "042-01",
+  "hue": 0,
+  "sprite": {
+    "file": "042-Monster12",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "field:0,200"
+  ],
+  "extra": {}
+}

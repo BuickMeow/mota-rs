@@ -1,0 +1,23 @@
+{
+  "id": "skeleton_mage",
+  "name": "骷髅法师",
+  "hp": 500,
+  "atk": 100,
+  "def": 400,
+  "mdef": 125,
+  "gold": 15,
+  "exp": 15,
+  "battler": "044-03",
+  "hue": 0,
+  "sprite": {
+    "file": "044-Monster14",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "magic_atk"
+  ],
+  "extra": {}
+}

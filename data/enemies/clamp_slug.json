@@ -1,0 +1,21 @@
+{
+  "id": "clamp_slug",
+  "name": "夹击鼻涕虫",
+  "hp": 500,
+  "atk": 100,
+  "def": 100,
+  "mdef": 100,
+  "gold": 0,
+  "exp": 0,
+  "battler": "038-04",
+  "hue": 0,
+  "sprite": {
+    "file": "038-Monster08",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

@@ -1,0 +1,14 @@
+{
+  "id": "blue",
+  "name": "蓝门",
+  "key": "blue_key",
+  "consume": true,
+  "description": "撞上扣除一把蓝钥匙",
+  "sprite": {
+    "file": "202-other02",
+    "hue": 0,
+    "col": 1,
+    "row": 0,
+    "opacity": 255
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "yellow_gem",
+  "name": "黄宝石",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加勇士的等级（消耗物品，快捷键t）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 3,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "gem:level:1"
+}

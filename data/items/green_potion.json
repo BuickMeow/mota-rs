@@ -1,0 +1,16 @@
+{
+  "id": "green_potion",
+  "name": "绿血瓶",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加生命1000点（消耗物品，快捷键4）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 2,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "potion:1000"
+}

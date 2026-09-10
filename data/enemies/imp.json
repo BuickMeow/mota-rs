@@ -1,0 +1,23 @@
+{
+  "id": "imp",
+  "name": "小魔鬼",
+  "hp": 150,
+  "atk": 110,
+  "def": 38,
+  "mdef": 124,
+  "gold": 16,
+  "exp": 16,
+  "battler": "045-04",
+  "hue": 0,
+  "sprite": {
+    "file": "045-Monster15",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [
+    "mimic"
+  ],
+  "extra": {}
+}

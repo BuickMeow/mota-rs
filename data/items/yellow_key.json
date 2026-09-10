@@ -1,0 +1,16 @@
+{
+  "id": "yellow_key",
+  "name": "黄钥匙",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来开黄色的门",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "key"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "green_gem",
+  "name": "绿宝石",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加勇士的魔防（消耗物品，快捷键t）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 2,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "gem:mdef:10"
+}

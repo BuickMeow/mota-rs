@@ -1,0 +1,16 @@
+{
+  "id": "bomb",
+  "name": "炸弹",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "消灭玩家面对的单个非Boss怪物（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "tool"
+}

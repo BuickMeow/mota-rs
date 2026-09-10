@@ -1,0 +1,14 @@
+{
+  "id": "red",
+  "name": "红门",
+  "key": "red_key",
+  "consume": true,
+  "description": "撞上扣除一把红钥匙",
+  "sprite": {
+    "file": "202-other02",
+    "hue": 0,
+    "col": 2,
+    "row": 0,
+    "opacity": 255
+  }
+}

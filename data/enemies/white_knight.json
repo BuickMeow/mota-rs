@@ -1,0 +1,23 @@
+{
+  "id": "white_knight",
+  "name": "白衣武士",
+  "hp": 235,
+  "atk": 450,
+  "def": 100,
+  "mdef": 100,
+  "gold": 100,
+  "exp": 98,
+  "battler": "038-02",
+  "hue": 0,
+  "sprite": {
+    "file": "038-Monster08",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "clamp:0"
+  ],
+  "extra": {}
+}

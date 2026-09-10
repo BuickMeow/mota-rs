@@ -1,0 +1,16 @@
+{
+  "id": "lucky_coin",
+  "name": "幸运金币",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "消灭怪物后可得到双倍金币",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 3,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

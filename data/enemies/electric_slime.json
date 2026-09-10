@@ -1,0 +1,23 @@
+{
+  "id": "electric_slime",
+  "name": "电波史来姆",
+  "hp": 90,
+  "atk": 70,
+  "def": 20,
+  "mdef": 122,
+  "gold": 0,
+  "exp": 0,
+  "battler": "048-01",
+  "hue": 0,
+  "sprite": {
+    "file": "048-Monster18",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "revive"
+  ],
+  "extra": {}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "blue_potion",
+  "name": "蓝血瓶",
+  "auto_use": true,
+  "reusable": false,
+  "passive": false,
+  "description": "使用后增加生命200点（消耗物品，快捷键2）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 1,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "potion:200"
+}

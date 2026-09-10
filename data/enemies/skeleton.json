@@ -1,0 +1,23 @@
+{
+  "id": "skeleton",
+  "name": "骷髅人",
+  "hp": 55,
+  "atk": 40,
+  "def": 8,
+  "mdef": 109,
+  "gold": 8,
+  "exp": 8,
+  "battler": "033-01",
+  "hue": 0,
+  "sprite": {
+    "file": "033-Monster03",
+    "hue": 10,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "hide"
+  ],
+  "extra": {}
+}

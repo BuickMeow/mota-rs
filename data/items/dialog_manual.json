@@ -1,0 +1,16 @@
+{
+  "id": "dialog_manual",
+  "name": "对话手册",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "用来察看对话信息（快捷键i）",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 1,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

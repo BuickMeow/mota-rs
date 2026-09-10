@@ -1,0 +1,23 @@
+{
+  "id": "blue_guard",
+  "name": "蓝卫兵",
+  "hp": 500,
+  "atk": 540,
+  "def": 444,
+  "mdef": 123,
+  "gold": 17,
+  "exp": 17,
+  "battler": "036-02",
+  "hue": 0,
+  "sprite": {
+    "file": "036-Monster06",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "explode"
+  ],
+  "extra": {}
+}

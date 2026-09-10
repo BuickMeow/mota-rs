@@ -1,0 +1,23 @@
+{
+  "id": "red_head",
+  "name": "红头怪",
+  "hp": 70,
+  "atk": 35,
+  "def": 6,
+  "mdef": 111,
+  "gold": 6,
+  "exp": 6,
+  "battler": "031-02",
+  "hue": 0,
+  "sprite": {
+    "file": "031-Monster01",
+    "hue": 0,
+    "col": 0,
+    "row": 1,
+    "opacity": 255
+  },
+  "skills": [
+    "first_strike"
+  ],
+  "extra": {}
+}

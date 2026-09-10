@@ -1,0 +1,23 @@
+{
+  "id": "cursed_wizard",
+  "name": "诅咒巫师",
+  "hp": 80,
+  "atk": 55,
+  "def": 17,
+  "mdef": 117,
+  "gold": 11,
+  "exp": 11,
+  "battler": "044-01",
+  "hue": 0,
+  "sprite": {
+    "file": "044-Monster14",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [
+    "curse"
+  ],
+  "extra": {}
+}

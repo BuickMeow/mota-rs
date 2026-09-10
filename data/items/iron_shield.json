@@ -1,0 +1,16 @@
+{
+  "id": "iron_shield",
+  "name": "铁盾",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "最常见的盾(装备物品)",
+  "sprite": {
+    "file": "104-item04",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "equipment:armor:0,5,5"
+}

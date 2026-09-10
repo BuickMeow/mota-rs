@@ -1,0 +1,8 @@
+{
+  "id": "item_shop",
+  "name": "道具商店",
+  "entries": [
+    { "kind": "item", "item": "yellow_key", "amount": 1, "cost_gold": 10, "cost_exp": 0 },
+    { "kind": "item", "item": "red_potion", "amount": 1, "cost_gold": 30, "cost_exp": 0 }
+  ]
+}

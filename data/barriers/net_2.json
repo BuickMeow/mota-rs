@@ -1,0 +1,15 @@
+{
+  "id": "net_2",
+  "name": "网",
+  "code": 2,
+  "damage": 0,
+  "effect": "weaken",
+  "sprite": {
+    "file": "002-npc02",
+    "hue": 310,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "description": "Common015变量21=2分支：衰弱处理（需开关15）"
+}

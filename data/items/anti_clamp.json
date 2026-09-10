@@ -1,0 +1,16 @@
+{
+  "id": "anti_clamp",
+  "name": "防夹蕉",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "持有后不受怪物夹击的伤害",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 1,
+    "row": 2,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

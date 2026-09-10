@@ -1,0 +1,16 @@
+{
+  "id": "panacea",
+  "name": "万能解药",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "可以消除所有状态的药水（消耗物品）",
+  "sprite": {
+    "file": "103-item03",
+    "hue": 0,
+    "col": 2,
+    "row": 3,
+    "opacity": 255
+  },
+  "kind": "cure:poison,weak,curse,slow"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hp_staff",
+  "name": "生命法杖",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "按等级增加生命",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 3,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

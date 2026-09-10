@@ -1,0 +1,16 @@
+{
+  "id": "mdef_staff",
+  "name": "魔防法杖",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "按等级增加魔防",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 2,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

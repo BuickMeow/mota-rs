@@ -1,0 +1,16 @@
+{
+  "id": "red_key",
+  "name": "红钥匙",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "用来开红色的门",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 2,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "key"
+}

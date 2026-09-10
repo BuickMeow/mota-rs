@@ -1,0 +1,23 @@
+{
+  "id": "red_knight",
+  "name": "红骑士",
+  "hp": 300,
+  "atk": 500,
+  "def": 600,
+  "mdef": 100,
+  "gold": 21,
+  "exp": 21,
+  "battler": "037-03",
+  "hue": 0,
+  "sprite": {
+    "file": "037-Monster07",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "forget"
+  ],
+  "extra": {}
+}

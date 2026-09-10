@@ -1,0 +1,23 @@
+{
+  "id": "skeleton_knight",
+  "name": "骷髅骑士",
+  "hp": 350,
+  "atk": 600,
+  "def": 450,
+  "mdef": 100,
+  "gold": 22,
+  "exp": 22,
+  "battler": "033-04",
+  "hue": 0,
+  "sprite": {
+    "file": "033-Monster03",
+    "hue": 0,
+    "col": 0,
+    "row": 3,
+    "opacity": 255
+  },
+  "skills": [
+    "disguise"
+  ],
+  "extra": {}
+}

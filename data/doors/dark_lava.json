@@ -1,0 +1,13 @@
+{
+  "id": "dark_lava",
+  "name": "暗熔",
+  "consume": false,
+  "description": "可被冰冻徽章（消耗）破坏",
+  "sprite": {
+    "file": "205-other05",
+    "hue": 0,
+    "col": 1,
+    "row": 0,
+    "opacity": 255
+  }
+}

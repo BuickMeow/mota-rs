@@ -1,0 +1,20 @@
+{
+  "id": "freeze_badge",
+  "name": "冰冻徽章",
+  "auto_use": false,
+  "reusable": false,
+  "passive": false,
+  "description": "消去一块熔岩地面（消耗物品）",
+  "sprite": {
+    "file": "102-item02",
+    "hue": 0,
+    "col": 2,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "tool",
+  "breaks": [
+    "dark_lava"
+  ],
+  "break_radius": 0
+}

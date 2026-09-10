@@ -1,0 +1,351 @@
+{
+  "tables": [
+    {
+      "table": "enemies",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "怪物ID，地图怪物事件引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "hp",
+          "field_type": "int",
+          "default": 0,
+          "description": "生命"
+        },
+        {
+          "name": "atk",
+          "field_type": "int",
+          "default": 0,
+          "description": "攻击"
+        },
+        {
+          "name": "def",
+          "field_type": "int",
+          "default": 0,
+          "description": "防御"
+        },
+        {
+          "name": "mdef",
+          "field_type": "int",
+          "default": 0,
+          "description": "魔防"
+        },
+        {
+          "name": "gold",
+          "field_type": "int",
+          "default": 0,
+          "description": "打败给的金币"
+        },
+        {
+          "name": "exp",
+          "field_type": "int",
+          "default": 0,
+          "description": "打败给的经验"
+        },
+        {
+          "name": "battler",
+          "field_type": "str",
+          "default": "",
+          "description": "图片名（如 032-03），每个怪物都有"
+        },
+        {
+          "name": "hue",
+          "field_type": "int",
+          "default": 0,
+          "description": "图片色相"
+        },
+        {
+          "name": "sprite",
+          "field_type": "object",
+          "default": {},
+          "description": "地图默认贴图 {file,hue,col,row,opacity}"
+        },
+        {
+          "name": "skills",
+          "field_type": "list",
+          "default": [],
+          "description": "特技串：id 或 id:值（领域 field:范围,伤害），可0/1/多个"
+        },
+        {
+          "name": "extra",
+          "field_type": "object",
+          "default": {},
+          "description": "开放扩展（如宝物、宝物概率）"
+        }
+      ]
+    },
+    {
+      "table": "items",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "物品ID，地图物品事件引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "auto_use",
+          "field_type": "bool",
+          "default": true,
+          "description": "拾取即吃还是进背包"
+        },
+        {
+          "name": "reusable",
+          "field_type": "bool",
+          "default": false,
+          "description": "可多次使用"
+        },
+        {
+          "name": "passive",
+          "field_type": "bool",
+          "default": false,
+          "description": "被动持有生效"
+        },
+        {
+          "name": "description",
+          "field_type": "str",
+          "default": "",
+          "description": "说明文字（如拾取回复生命）"
+        },
+        {
+          "name": "kind",
+          "field_type": "str",
+          "default": "",
+          "description": "紧凑串：key/potion:75/gem:atk:3/cure:poison/tool/relic/equipment:weapon:10,0,5"
+        },
+        {
+          "name": "sprite",
+          "field_type": "object",
+          "default": {},
+          "description": "地图默认贴图 {file,hue,col,row,opacity}"
+        },
+        {
+          "name": "breaks",
+          "field_type": "list",
+          "default": [],
+          "description": "工具可破坏的 door_id（暗墙/暗冰/暗熔）"
+        },
+        {
+          "name": "break_radius",
+          "field_type": "int",
+          "default": 0,
+          "description": "破坏范围（<0=整层，0=面前一格，>0=以勇士为中心的方形半径）"
+        }
+      ]
+    },
+    {
+      "table": "shops",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "商店ID，NPC/指令引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "entries",
+          "field_type": "list",
+          "default": [],
+          "description": "条目：{kind=item/hp/atk/def, item, amount, cost_gold, cost_exp}"
+        }
+      ]
+    },
+    {
+      "table": "skills",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "特技ID，怪物 skills 引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "description",
+          "field_type": "str",
+          "default": "",
+          "description": "说明"
+        },
+        {
+          "name": "r",
+          "field_type": "int",
+          "default": 255,
+          "description": "显示色红"
+        },
+        {
+          "name": "g",
+          "field_type": "int",
+          "default": 255,
+          "description": "显示色绿"
+        },
+        {
+          "name": "b",
+          "field_type": "int",
+          "default": 255,
+          "description": "显示色蓝"
+        },
+        {
+          "name": "a",
+          "field_type": "int",
+          "default": 255,
+          "description": "不透明度"
+        }
+      ]
+    },
+    {
+      "table": "doors",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "门ID，地图门事件引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "key",
+          "field_type": "str",
+          "default": "",
+          "description": "所需钥匙物品ID；条件墙为空"
+        },
+        {
+          "name": "consume",
+          "field_type": "bool",
+          "default": false,
+          "description": "开门是否消耗钥匙"
+        },
+        {
+          "name": "free",
+          "field_type": "bool",
+          "default": false,
+          "description": "徒手可开（一撞就开）"
+        },
+        {
+          "name": "sprite",
+          "field_type": "object",
+          "default": {},
+          "description": "地图默认贴图 {file,hue,col,row,opacity}"
+        },
+        {
+          "name": "description",
+          "field_type": "str",
+          "default": "",
+          "description": "说明"
+        }
+      ]
+    },
+    {
+      "table": "barriers",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "路障ID，地图路障事件引用它"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "code",
+          "field_type": "int",
+          "default": 0,
+          "description": "变量21编码（1/2/4/8/32）"
+        },
+        {
+          "name": "damage",
+          "field_type": "int",
+          "default": 0,
+          "description": "直接伤害"
+        },
+        {
+          "name": "effect",
+          "field_type": "str",
+          "default": "",
+          "description": "分支种类：toll/weaken/hurt/flag"
+        },
+        {
+          "name": "sprite",
+          "field_type": "object",
+          "default": {},
+          "description": "地图默认贴图 {file,hue,col,row,opacity}"
+        },
+        {
+          "name": "description",
+          "field_type": "str",
+          "default": "",
+          "description": "说明"
+        }
+      ]
+    },
+    {
+      "table": "tilesets",
+      "fields": [
+        {
+          "name": "id",
+          "field_type": "str",
+          "default": "",
+          "description": "图块集ID"
+        },
+        {
+          "name": "name",
+          "field_type": "str",
+          "default": "",
+          "description": "显示名"
+        },
+        {
+          "name": "passages",
+          "field_type": "list",
+          "default": [],
+          "description": "通行表（低4位方向/0x0f禁行/0x40草木/0x80柜台）"
+        },
+        {
+          "name": "priorities",
+          "field_type": "list",
+          "default": [],
+          "description": "优先级（0画在角色下方）"
+        },
+        {
+          "name": "terrains",
+          "field_type": "list",
+          "default": [],
+          "description": "地形标志（规则引擎待接）"
+        }
+      ]
+    }
+  ]
+}

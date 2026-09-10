@@ -1,0 +1,14 @@
+{
+  "id": "iron",
+  "name": "铁门",
+  "key": "iron_key",
+  "consume": false,
+  "description": "持有铁门钥匙即开，不消耗",
+  "sprite": {
+    "file": "203-other03",
+    "hue": 0,
+    "col": 3,
+    "row": 0,
+    "opacity": 255
+  }
+}

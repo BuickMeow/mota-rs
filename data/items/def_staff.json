@@ -1,0 +1,16 @@
+{
+  "id": "def_staff",
+  "name": "防御法杖",
+  "auto_use": false,
+  "reusable": false,
+  "passive": true,
+  "description": "按等级增加防御力",
+  "sprite": {
+    "file": "105-item05",
+    "hue": 0,
+    "col": 1,
+    "row": 0,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

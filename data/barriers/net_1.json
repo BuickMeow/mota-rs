@@ -1,0 +1,15 @@
+{
+  "id": "net_1",
+  "name": "网",
+  "code": 1,
+  "damage": 0,
+  "effect": "toll",
+  "sprite": {
+    "file": "002-npc02",
+    "hue": 120,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "description": "Common015变量21=1分支：血瓶变量＋开关13"
+}

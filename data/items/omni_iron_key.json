@@ -1,0 +1,16 @@
+{
+  "id": "omni_iron_key",
+  "name": "万能铁门钥匙",
+  "auto_use": false,
+  "reusable": true,
+  "passive": true,
+  "description": "用来开所有的铁门",
+  "sprite": {
+    "file": "101-item01",
+    "hue": 0,
+    "col": 1,
+    "row": 1,
+    "opacity": 255
+  },
+  "kind": "relic"
+}

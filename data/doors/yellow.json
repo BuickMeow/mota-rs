@@ -1,0 +1,14 @@
+{
+  "id": "yellow",
+  "name": "黄门",
+  "key": "yellow_key",
+  "consume": true,
+  "description": "撞上扣除一把黄钥匙",
+  "sprite": {
+    "file": "202-other02",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  }
+}

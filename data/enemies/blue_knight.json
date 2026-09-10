@@ -1,0 +1,21 @@
+{
+  "id": "blue_knight",
+  "name": "蓝骑士",
+  "hp": 260,
+  "atk": 145,
+  "def": 62,
+  "mdef": 100,
+  "gold": 20,
+  "exp": 20,
+  "battler": "037-01",
+  "hue": 0,
+  "sprite": {
+    "file": "037-Monster07",
+    "hue": 0,
+    "col": 0,
+    "row": 0,
+    "opacity": 255
+  },
+  "skills": [],
+  "extra": {}
+}

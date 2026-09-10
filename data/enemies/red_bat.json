@@ -1,0 +1,23 @@
+{
+  "id": "red_bat",
+  "name": "红蝙蝠",
+  "hp": 120,
+  "atk": 550,
+  "def": 400,
+  "mdef": 124,
+  "gold": 13,
+  "exp": 13,
+  "battler": "032-03",
+  "hue": 0,
+  "sprite": {
+    "file": "032-Monster02",
+    "hue": 0,
+    "col": 0,
+    "row": 2,
+    "opacity": 255
+  },
+  "skills": [
+    "vampire"
+  ],
+  "extra": {}
+}

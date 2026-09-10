@@ -1,0 +1,14 @@
+{
+  "id": "iron_free",
+  "name": "徒手铁门",
+  "consume": false,
+  "free": true,
+  "sprite": {
+    "file": "203-other03",
+    "hue": 0,
+    "col": 3,
+    "row": 0,
+    "opacity": 255
+  },
+  "description": "徒手可开：一撞就开，不耗钥匙不吃开关（7630里没有，原创门类）"
+}
