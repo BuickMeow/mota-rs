@@ -6,8 +6,6 @@ use eframe::egui;
 use mota_core::db::{Door, SpriteRef};
 use mota_core::map::{Floor, Instance, Lifecycle, Trigger};
 
-use crate::canvas::instances_at;
-
 fn lifecycle_label(lc: &Option<Lifecycle>) -> &'static str {
     match lc {
         None => "默认",
@@ -295,7 +293,7 @@ pub fn show_inspector(
         return;
     };
     ui.label(format!("选中 ({x},{y}) · 双击看详情"));
-    let idxs = instances_at(floor, x, y);
+    let idxs = floor.instances_at(x, y);
     if idxs.is_empty() {
         ui.label("本格无实例");
         return;
@@ -323,7 +321,7 @@ pub fn show_event_detail(
     doors: &HashMap<String, Door>,
     status: &mut String,
 ) {
-    let idxs = instances_at(floor, x, y);
+    let idxs = floor.instances_at(x, y);
     ui.label(format!("格子 ({x},{y}) · 实例 {} 个", idxs.len()));
     if idxs.is_empty() {
         ui.weak("本格已无实例");

@@ -8,11 +8,12 @@ use mota_core::db::{Barrier, Door, Enemy, Item};
 use mota_core::map::Floor;
 use mota_core::tiles::Tileset;
 
-use crate::canvas::{CanvasIn, PlayViewIn, Playtest};
+use crate::canvas::{CanvasIn, PlayViewIn};
 use crate::fonts;
 use crate::gfx::Textures;
 use crate::palette::{BrushKind, LeftTab, PaletteState};
 use crate::{canvas, inspector};
+use mota_core::runtime::{Dialog, Playtest, apply_broken_tiles, apply_once_done};
 
 /// 启动落在 7630 的「开始地图」（m02，必须保留），出生点在 S 标志处。
 const START_FLOOR: &str = include_str!("../../../data/floors/m02.json");
@@ -33,30 +34,58 @@ fn blank_floor() -> Floor {
     }
 }
 
-/// 载入规则脚本：优先 `scripts/rules/*.lua`（可热改），缺文件回落到内置版本。
-fn load_rules() -> mota_core::rules::Rules {
-    let files = ["battle", "items", "after_battle", "on_step"];
-    let mut scripts = Vec::new();
-    for name in files {
-        match std::fs::read_to_string(format!("scripts/rules/{name}.lua")) {
-            Ok(text) => scripts.push(text),
-            Err(_) => {
-                // 任一文件缺失就整体用内置，避免磁盘/内置混版
-                scripts.clear();
-                break;
+/// 递归收集 `*.lua`（相对路径, 源码）；下划线/点开头视为停用。
+/// 排序保证加载顺序稳定（要精确顺序用 `01_`、`02_` 前缀）。
+fn discover_rules(dir: &std::path::Path) -> Vec<(String, String)> {
+    fn walk(dir: &std::path::Path, base: &std::path::Path, out: &mut Vec<PathBuf>) {
+        let Ok(rd) = std::fs::read_dir(dir) else {
+            return;
+        };
+        for entry in rd.filter_map(|e| e.ok()) {
+            let path = entry.path();
+            if path.is_dir() {
+                walk(&path, base, out);
+                continue;
+            }
+            let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            if name.starts_with('_') || name.starts_with('.') {
+                continue;
+            }
+            if path.extension().map(|x| x == "lua").unwrap_or(false)
+                && let Ok(rel) = path.strip_prefix(base)
+            {
+                out.push(rel.to_path_buf());
             }
         }
     }
-    let refs: Vec<&str> = scripts.iter().map(String::as_str).collect();
-    if refs.len() == files.len() {
-        mota_core::rules::Rules::from_scripts(&refs)
-    } else {
-        mota_core::rules::Rules::embedded()
+    let mut files = Vec::new();
+    walk(dir, dir, &mut files);
+    files.sort();
+    files
+        .into_iter()
+        .filter_map(|rel| {
+            let text = std::fs::read_to_string(dir.join(&rel)).ok()?;
+            Some((rel.to_string_lossy().into_owned(), text))
+        })
+        .collect()
+}
+
+/// 载入规则：优先自动发现 `scripts/rules/**/*.lua`（丢文件即生效），缺文件回落到内置。
+/// 返回（规则引擎, 脚本个数）。
+fn load_rules() -> (mota_core::rules::Rules, usize) {
+    let scripts = discover_rules(std::path::Path::new("scripts/rules"));
+    if !scripts.is_empty() {
+        let refs: Vec<(&str, &str)> = scripts
+            .iter()
+            .map(|(n, c)| (n.as_str(), c.as_str()))
+            .collect();
+        match mota_core::rules::Rules::from_named(&refs) {
+            Ok(rules) => return (rules, scripts.len()),
+            Err(e) => eprintln!("规则脚本载入失败：{e}，改用内置版本"),
+        }
     }
-    .unwrap_or_else(|e| {
-        eprintln!("规则脚本载入失败：{e}，改用内置版本");
-        mota_core::rules::Rules::embedded().expect("内置规则必须能载入")
-    })
+    let rules = mota_core::rules::Rules::embedded().expect("内置规则必须能载入");
+    (rules, mota_core::rules::EMBEDDED_RULES.len())
 }
 
 /// 素材目录：优先工作区 `assets/Graphics`，其次可执行文件旁（发行版布局）。
@@ -188,16 +217,17 @@ impl EditorApp {
             .ok()
             .and_then(|text| serde_json::from_str::<mota_core::battle::Hero>(&text).ok())
             .unwrap_or_default();
-        let rules = load_rules();
+        let (rules, rules_n) = load_rules();
         let status = if gfx_dir.is_dir() {
             format!(
-                "已载入开始地图 m02 · 素材 {} · 门{}种/怪{}种/物{}种/障{}种/块表{}",
+                "已载入开始地图 m02 · 素材 {} · 门{}种/怪{}种/物{}种/障{}种/块表{} · 规则{}个",
                 gfx_dir.display(),
                 doors.len(),
                 enemies.len(),
                 items.len(),
                 barriers.len(),
                 if tiles.is_some() { "有" } else { "无" },
+                rules_n,
             )
         } else {
             "已载入开始地图 m02 · 缺素材（把 7630 Graphics 放到 assets/）".to_string()
@@ -309,8 +339,9 @@ impl EditorApp {
             self.play_placed = false;
             self.status = "回编辑模式".to_string();
         } else {
-            // 开试玩前重读规则/初始属性：改 scripts/rules/*.lua 和 hero.json 不用重启编辑器
-            self.rules = load_rules();
+            // 开试玩前重读规则/初始属性：往 scripts/rules 里丢 lua、改 hero.json 都不用重启
+            let (rules, rules_n) = load_rules();
+            self.rules = rules;
             if let Ok(text) = std::fs::read_to_string("data/hero.json")
                 && let Ok(h) = serde_json::from_str::<mota_core::battle::Hero>(&text)
             {
@@ -320,7 +351,7 @@ impl EditorApp {
             self.play = Playtest::start(spawn, self.hero.clone());
             // 开始地图的自动剧情：进游戏直接弹对话，播完由 pending_goto 切层
             if let Some(intro) = &self.floor.intro {
-                self.play.dialog = Some(canvas::Dialog {
+                self.play.dialog = Some(Dialog {
                     lines: intro.lines.clone(),
                     page: 0,
                     vanish: None,
@@ -335,7 +366,7 @@ impl EditorApp {
             self.play_placed = false;
             self.event_detail = None;
             self.click_snap = None;
-            self.status = "试玩：请看游戏窗口（方向键/WASD 走路，点击格瞬移）".to_string();
+            self.status = format!("试玩：请看游戏窗口 · 规则{rules_n}个");
         }
     }
 
@@ -464,8 +495,8 @@ impl EditorApp {
 
     /// 重放本局进程：消费掉的一次性事件 + 破坏过的地形。
     fn apply_play_state(&self, floor: &mut Floor) {
-        canvas::apply_once_done(floor, &self.play.once_done);
-        canvas::apply_broken_tiles(floor, &self.play.broken_tiles);
+        apply_once_done(floor, &self.play.once_done);
+        apply_broken_tiles(floor, &self.play.broken_tiles);
     }
 }
 
@@ -899,5 +930,23 @@ mod tests {
     fn hidpi_defaults_to_1_5x() {
         assert_eq!(EditorApp::default_zoom(2.0), 1.5);
         assert_eq!(EditorApp::default_zoom(1.0), 1.0);
+    }
+
+    #[test]
+    fn discover_rules_recurses_sorts_and_skips_disabled() {
+        let dir = std::env::temp_dir().join(format!("mota_rules_{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(dir.join("sub")).unwrap();
+        std::fs::write(dir.join("02_b.lua"), "function b() end").unwrap();
+        std::fs::write(dir.join("01_a.lua"), "function a() end").unwrap();
+        std::fs::write(dir.join("_off.lua"), "function off() end").unwrap();
+        std::fs::write(dir.join("note.txt"), "x").unwrap();
+        std::fs::write(dir.join("sub").join("03_c.lua"), "function c() end").unwrap();
+
+        let got = discover_rules(&dir);
+        let names: Vec<&str> = got.iter().map(|(n, _)| n.as_str()).collect();
+        assert_eq!(names, vec!["01_a.lua", "02_b.lua", "sub/03_c.lua"]);
+        assert!(got[0].1.contains("function a"));
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

@@ -12,12 +12,11 @@ use std::collections::HashMap;
 use mlua::{Lua, Result as LuaResult, Table};
 
 use crate::battle::{FightReport, Hero};
+use crate::cmd::Cmd;
 use crate::db::{Enemy, Item, parse_skill};
 
-pub const BATTLE_LUA: &str = include_str!("../../../scripts/rules/battle.lua");
-pub const ITEMS_LUA: &str = include_str!("../../../scripts/rules/items.lua");
-pub const AFTER_BATTLE_LUA: &str = include_str!("../../../scripts/rules/after_battle.lua");
-pub const ON_STEP_LUA: &str = include_str!("../../../scripts/rules/on_step.lua");
+// build.rs 自动扫 `scripts/rules/**/*.lua` 生成（新增脚本不用改 Rust）。
+include!(concat!(env!("OUT_DIR"), "/rules_embedded.rs"));
 
 /// Rust 能执行的规则操作。
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -42,6 +41,21 @@ pub struct BreakPlan {
     pub tiles: Vec<i32>,
     pub layer: usize,
     pub radius: i64,
+}
+
+/// 事件指令执行结果（`Rules::run_cmds`）。
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct EventOutcome {
+    pub messages: Vec<String>,
+    pub ops: Vec<Op>,
+    /// 传送（floor, landing）。
+    pub goto: Option<(String, String)>,
+    /// 触发战斗（enemy id）。
+    pub fight: Option<String>,
+    /// 打开商店（shop id）。
+    pub shop: Option<String>,
+    /// 调用公共事件（名字）。
+    pub common: Option<String>,
 }
 
 /// 一次规则调用的结果。
@@ -71,17 +85,25 @@ pub struct Rules {
 }
 
 impl Rules {
-    /// 内置脚本（`include_str!` 与磁盘文件同源）。
+    /// 内置脚本：build.rs 自动收集的 `scripts/rules/**/*.lua`。
     pub fn embedded() -> LuaResult<Self> {
-        Self::from_scripts(&[BATTLE_LUA, ITEMS_LUA, AFTER_BATTLE_LUA, ON_STEP_LUA])
+        Self::from_named(EMBEDDED_RULES)
     }
 
-    pub fn from_scripts(scripts: &[&str]) -> LuaResult<Self> {
+    /// 按 (名字, 源码) 顺序载入，名字用于报错定位。
+    /// 后载入的同名函数覆盖先载入的（RMXP 脚本列表的语义）。
+    pub fn from_named(scripts: &[(&str, &str)]) -> LuaResult<Self> {
         let lua = Lua::new();
-        for code in scripts {
-            lua.load(*code).exec()?;
+        for (name, code) in scripts {
+            lua.load(*code).set_name(*name).exec()?;
         }
         Ok(Self { lua })
+    }
+
+    /// 匿名片段直载（测试/临时用）。
+    pub fn from_scripts(scripts: &[&str]) -> LuaResult<Self> {
+        let named: Vec<(&str, &str)> = scripts.iter().map(|s| ("<inline>", *s)).collect();
+        Self::from_named(&named)
     }
 
     /// 战斗结算。
@@ -175,6 +197,101 @@ impl Rules {
         let func: mlua::Function = self.lua.globals().get("on_step")?;
         let out: Table = func.call((hero_t, bag_t, near_t))?;
         parse_outcome(&out)
+    }
+
+    /// 执行事件指令列表（`scripts/rules/commands.lua`）。
+    pub fn run_cmds(
+        &self,
+        hero: &Hero,
+        bag: &HashMap<String, i64>,
+        flags: &HashMap<String, bool>,
+        vars: &HashMap<String, i64>,
+        cmds: &[Cmd],
+    ) -> LuaResult<EventOutcome> {
+        let hero_t = self.hero_table(hero, bag, flags, vars)?;
+        let bag_t = bag_table(&self.lua, bag)?;
+        let list = self.lua.create_table()?;
+        for (i, cmd) in cmds.iter().enumerate() {
+            list.set(i + 1, self.cmd_table(cmd)?)?;
+        }
+        let func: mlua::Function = self.lua.globals().get("run_commands")?;
+        let out: Table = func.call((hero_t, bag_t, list))?;
+
+        let messages = match out.get::<Option<Table>>("messages")? {
+            Some(t) => {
+                let mut v = Vec::new();
+                for line in t.sequence_values::<String>() {
+                    v.push(line?);
+                }
+                v
+            }
+            None => Vec::new(),
+        };
+        let goto = out
+            .get::<Option<Table>>("goto")?
+            .map(|g| -> LuaResult<(String, String)> { Ok((g.get("floor")?, g.get("landing")?)) })
+            .transpose()?;
+        Ok(EventOutcome {
+            messages,
+            ops: parse_ops(&out)?,
+            goto,
+            fight: out.get::<Option<String>>("fight")?,
+            shop: out.get::<Option<String>>("shop")?,
+            common: out.get::<Option<String>>("common")?,
+        })
+    }
+
+    /// Cmd → Lua 表（字段名与 commands.lua 对齐）。
+    fn cmd_table(&self, cmd: &Cmd) -> LuaResult<Table> {
+        let t = self.lua.create_table()?;
+        match cmd {
+            Cmd::Talk { lines } => {
+                t.set("op", "talk")?;
+                t.set("lines", string_list_table(&self.lua, lines)?)?;
+            }
+            Cmd::Give { item, n } => {
+                t.set("op", "give")?;
+                t.set("item", item.as_str())?;
+                t.set("n", *n)?;
+            }
+            Cmd::Take { item, n } => {
+                t.set("op", "take")?;
+                t.set("item", item.as_str())?;
+                t.set("n", *n)?;
+            }
+            Cmd::SetFlag { name, value } => {
+                t.set("op", "set_flag")?;
+                t.set("name", name.as_str())?;
+                t.set("value", *value)?;
+            }
+            Cmd::AddVar { name, delta } => {
+                t.set("op", "add_var")?;
+                t.set("name", name.as_str())?;
+                t.set("delta", *delta)?;
+            }
+            Cmd::Fight { enemy } => {
+                t.set("op", "fight")?;
+                t.set("enemy", enemy.as_str())?;
+            }
+            Cmd::Teleport { floor, landing } => {
+                t.set("op", "teleport")?;
+                t.set("floor", floor.as_str())?;
+                t.set("landing", landing.as_str())?;
+            }
+            Cmd::OpenShop { shop } => {
+                t.set("op", "open_shop")?;
+                t.set("shop", shop.as_str())?;
+            }
+            Cmd::CallCommon { name } => {
+                t.set("op", "call_common")?;
+                t.set("name", name.as_str())?;
+            }
+            Cmd::Lua { code } => {
+                t.set("op", "lua")?;
+                t.set("code", code.as_str())?;
+            }
+        }
+        Ok(t)
     }
 
     fn hero_table(
@@ -300,9 +417,7 @@ fn int_list(t: &Table, key: &str) -> LuaResult<Vec<i32>> {
     Ok(out)
 }
 
-fn parse_outcome(t: &Table) -> LuaResult<RuleOutcome> {
-    let message = t.get::<Option<String>>("message")?.unwrap_or_default();
-    let consume = t.get::<Option<bool>>("consume")?.unwrap_or(false);
+fn parse_ops(t: &Table) -> LuaResult<Vec<Op>> {
     let mut ops = Vec::new();
     if let Some(list) = t.get::<Option<Table>>("ops")? {
         for item in list.sequence_values::<Table>() {
@@ -334,6 +449,13 @@ fn parse_outcome(t: &Table) -> LuaResult<RuleOutcome> {
             }
         }
     }
+    Ok(ops)
+}
+
+fn parse_outcome(t: &Table) -> LuaResult<RuleOutcome> {
+    let message = t.get::<Option<String>>("message")?.unwrap_or_default();
+    let consume = t.get::<Option<bool>>("consume")?.unwrap_or(false);
+    let ops = parse_ops(t)?;
     let break_plan = match t.get::<Option<Table>>("break")? {
         Some(b) => Some(BreakPlan {
             doors: string_list(&b, "doors")?,
@@ -393,6 +515,33 @@ mod tests {
 
     fn rules() -> Rules {
         Rules::embedded().unwrap()
+    }
+
+    #[test]
+    fn embedded_rules_are_collected_by_build_script() {
+        let names: Vec<&str> = EMBEDDED_RULES.iter().map(|(n, _)| *n).collect();
+        assert!(names.len() >= 4, "内置规则至少 4 个：{names:?}");
+        assert!(names.iter().any(|n| n.ends_with("battle.lua")));
+        assert!(names.iter().any(|n| n.ends_with("items.lua")));
+    }
+
+    #[test]
+    fn from_named_loads_in_order_and_later_overrides() {
+        let a =
+            "function fight(hero, enemy) return { damage = 1, nowin = 0, turns = 1, log = {} } end";
+        let b =
+            "function fight(hero, enemy) return { damage = 2, nowin = 0, turns = 1, log = {} } end";
+        let rules = Rules::from_named(&[("a.lua", a), ("b.lua", b)]).unwrap();
+        let r = rules
+            .fight(
+                &hero(),
+                &enemy(10, 1, 1, &[]),
+                &HashMap::new(),
+                &HashMap::new(),
+                &HashMap::new(),
+            )
+            .unwrap();
+        assert_eq!(r.damage, 2);
     }
 
     fn run(hero: &Hero, enemy: &Enemy, bag: &HashMap<String, i64>) -> FightReport {
@@ -539,6 +688,59 @@ mod tests {
             .unwrap();
         assert!(out.ops.contains(&Op::Hp(-10))); // 中毒
         assert!(out.ops.contains(&Op::Hp(-200))); // 领域（十字邻格）
+    }
+
+    #[test]
+    fn run_commands_basic() {
+        let cmds = vec![
+            Cmd::Talk {
+                lines: vec!["你好".to_string()],
+            },
+            Cmd::Give {
+                item: "gold".to_string(),
+                n: 50,
+            },
+            Cmd::SetFlag {
+                name: "救出仙子".to_string(),
+                value: true,
+            },
+            Cmd::Teleport {
+                floor: "m05".to_string(),
+                landing: "下楼梯".to_string(),
+            },
+        ];
+        let out = rules()
+            .run_cmds(
+                &hero(),
+                &HashMap::new(),
+                &HashMap::new(),
+                &HashMap::new(),
+                &cmds,
+            )
+            .unwrap();
+        assert_eq!(out.messages, vec!["你好".to_string()]);
+        assert!(out.ops.contains(&Op::Give("gold".to_string(), 50)));
+        assert!(out.ops.contains(&Op::Flag("救出仙子".to_string(), true)));
+        assert_eq!(out.goto, Some(("m05".to_string(), "下楼梯".to_string())));
+    }
+
+    #[test]
+    fn run_commands_lua_sandbox() {
+        let cmds = vec![Cmd::Lua {
+            code: r#"talk("欢迎") give("gold", 50) set_flag("救出仙子", true)"#.to_string(),
+        }];
+        let out = rules()
+            .run_cmds(
+                &hero(),
+                &HashMap::new(),
+                &HashMap::new(),
+                &HashMap::new(),
+                &cmds,
+            )
+            .unwrap();
+        assert_eq!(out.messages, vec!["欢迎".to_string()]);
+        assert!(out.ops.contains(&Op::Give("gold".to_string(), 50)));
+        assert!(out.ops.contains(&Op::Flag("救出仙子".to_string(), true)));
     }
 
     #[test]

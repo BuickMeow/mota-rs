@@ -1,8 +1,8 @@
-//! 指令流：可视化列表的存储形态，也是 Lua 生成的目标。
+//! 事件指令：可视化列表的存储形态。
 //!
-//! 编辑器渲染成 RMXP 式彩色列表；`Lua` 块是唯一手写代码入口。
+//! 执行在 `scripts/rules/commands.lua`（`Rules::run_cmds`），这里只管数据与序列化；
+//! `Lua` 块是唯一手写代码入口，跑在规则引擎沙箱里。
 
-use crate::state::GameState;
 use serde::{Deserialize, Serialize};
 
 /// 单条指令（全部命名引用，杜绝 0009 魔法数字）。
@@ -43,7 +43,7 @@ pub enum Cmd {
     CallCommon {
         name: String,
     },
-    /// 高级用户逃生舱（如复杂条件）。
+    /// 高级用户逃生舱（如复杂条件），在规则沙箱里执行。
     Lua {
         code: String,
     },
@@ -53,34 +53,12 @@ fn one() -> i64 {
     1
 }
 
-/// 可视化指令的最小执行器（Lua 块不走这里，走 `lua` 模块）。
-pub fn run_cmds(state: &mut GameState, cmds: &[Cmd]) {
-    for c in cmds {
-        match c {
-            Cmd::Talk { lines } => state.messages.extend(lines.iter().cloned()),
-            Cmd::Give { item, n } => *state.bag.entry(item.clone()).or_insert(0) += *n,
-            Cmd::Take { item, n } => *state.bag.entry(item.clone()).or_insert(0) -= *n,
-            Cmd::SetFlag { name, value } => {
-                state.flags.insert(name.clone(), *value);
-            }
-            Cmd::AddVar { name, delta } => *state.vars.entry(name.clone()).or_insert(0) += *delta,
-            Cmd::Fight { enemy } => state.messages.push(format!("<fight {enemy}>")),
-            Cmd::Teleport { floor, landing } => {
-                state.messages.push(format!("<teleport {floor}:{landing}>"));
-            }
-            Cmd::OpenShop { shop } => state.messages.push(format!("<shop {shop}>")),
-            Cmd::CallCommon { name } => state.messages.push(format!("<common {name}>")),
-            Cmd::Lua { code } => state.messages.push(format!("<lua {code}>")),
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn talk_give_flag_roundtrip() {
+    fn commands_roundtrip() {
         let cmds = vec![
             Cmd::Talk {
                 lines: vec!["勇者，你还上不去。".to_string()],
@@ -93,14 +71,21 @@ mod tests {
                 name: "救出仙子".to_string(),
                 value: true,
             },
+            Cmd::Teleport {
+                floor: "m05".to_string(),
+                landing: "下楼梯".to_string(),
+            },
         ];
         let json = serde_json::to_string(&cmds).unwrap();
         let back: Vec<Cmd> = serde_json::from_str(&json).unwrap();
-        assert_eq!(back.len(), 3);
+        assert_eq!(back.len(), 4);
+        assert!(matches!(&back[0], Cmd::Talk { lines } if lines.len() == 1));
+        assert!(matches!(&back[3], Cmd::Teleport { floor, .. } if floor == "m05"));
+    }
 
-        let mut st = GameState::default();
-        run_cmds(&mut st, &back);
-        assert_eq!(st.bag.get("gold"), Some(&50));
-        assert_eq!(st.flags.get("救出仙子"), Some(&true));
+    #[test]
+    fn give_n_defaults_to_one() {
+        let back: Cmd = serde_json::from_str(r#"{"op":"give","item":"yellow_key"}"#).unwrap();
+        assert!(matches!(back, Cmd::Give { n, .. } if n == 1));
     }
 }

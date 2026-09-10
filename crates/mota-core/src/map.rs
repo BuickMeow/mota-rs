@@ -229,6 +229,35 @@ impl Floor {
         }
     }
 
+    /// 找出某格的全部实例下标。
+    pub fn instances_at(&self, x: i32, y: i32) -> Vec<usize> {
+        self.instances
+            .iter()
+            .enumerate()
+            .filter(|(_, inst)| inst.x == x && inst.y == y)
+            .map(|(i, _)| i)
+            .collect()
+    }
+
+    /// 清除某格全部实例，返回清掉的数量。
+    pub fn erase_at(&mut self, x: i32, y: i32) -> usize {
+        let before = self.instances.len();
+        self.instances.retain(|inst| !(inst.x == x && inst.y == y));
+        before - self.instances.len()
+    }
+
+    /// 图块落笔：自动扩层，越界格跳过。
+    pub fn paint_tile(&mut self, x: i32, y: i32, z: usize, tid: i32) {
+        if x < 0 || y < 0 || x >= self.width as i32 || y >= self.height as i32 {
+            return;
+        }
+        while self.layers.len() <= z {
+            self.layers
+                .push(vec![vec![0; self.width as usize]; self.height as usize]);
+        }
+        self.layers[z][y as usize][x as usize] = tid;
+    }
+
     /// 按名找落脚点（楼梯的另一端）；没有就返回 None，不回落（显式摆放优先）。
     pub fn landing_pos(&self, name: &str) -> Option<(i32, i32)> {
         self.instances.iter().find_map(|inst| match &inst.template {
