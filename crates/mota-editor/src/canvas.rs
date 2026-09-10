@@ -7,6 +7,7 @@ use std::path::Path;
 
 use eframe::egui;
 use mota_core::map::{Floor, Instance, Lifecycle, TemplateKind};
+use mota_core::rules::{BreakPlan, Op, Rules, StepInput};
 
 use crate::gfx::{self, Textures};
 use crate::palette::{BrushKind, PaletteState};
@@ -23,6 +24,8 @@ pub struct Playtest {
     pub stats: mota_core::battle::Hero,
     pub bag: HashMap<String, i64>,
     pub flags: HashMap<String, bool>,
+    /// 命名变量（仇恨等规则状态）。
+    pub vars: HashMap<String, i64>,
     /// 本局已消费的一次性实例 id（Once）：切层重进不再出现。
     pub once_done: std::collections::HashSet<String>,
     /// 本局已清掉的地形图块 (层id, x, y, z)：切层重进不再长回来。
@@ -60,6 +63,7 @@ impl Playtest {
             stats,
             bag: HashMap::new(),
             flags: HashMap::new(),
+            vars: HashMap::new(),
             once_done: std::collections::HashSet::new(),
             broken_tiles: std::collections::HashSet::new(),
             pending_floor: None,
@@ -266,8 +270,8 @@ pub struct MoveCtx<'a> {
     pub barriers: &'a HashMap<String, mota_core::db::Barrier>,
     pub enemies: &'a HashMap<String, mota_core::db::Enemy>,
     pub tiles: Option<&'a mota_core::tiles::Tileset>,
-    /// 战斗规则 Lua 源码（None＝战斗未载入，碰怪只提示）。
-    pub battle_lua: Option<&'a str>,
+    /// 规则引擎（None＝规则未载入，战斗/触发只提示）。
+    pub rules: Option<&'a Rules>,
 }
 
 /// 试走一步：图块（按图块表通行）/门（按门表扣钥匙）/怪/NPC/推不动的箱子挡路，
@@ -316,8 +320,8 @@ pub fn step_hero(
     let mut pickup: Option<(usize, String)> = None;
     let mut open_door: Option<(usize, String, i64)> = None;
     let mut push_box: Option<(usize, i32, i32)> = None;
-    // (实例下标, 战报, 金币, 经验)：先算好，走完循环再统一落账。
-    let mut kill: Option<(usize, mota_core::battle::FightReport, i64, i64)> = None;
+    // (实例下标, 战报, 怪物 id)：先算好，走完循环再统一落账。
+    let mut kill: Option<(usize, mota_core::battle::FightReport, String)> = None;
     for i in idxs {
         let inst = &floor.instances[i];
         match &inst.template {
@@ -341,17 +345,18 @@ pub fn step_hero(
                     *status = format!("遭遇：{monster_id}（怪物表无此怪）");
                     return false;
                 };
-                let Some(lua) = ctx.battle_lua else {
+                let Some(rules) = ctx.rules else {
                     *status = format!("遭遇：{monster_id}（战斗规则未载入）");
                     return false;
                 };
-                let report = match mota_core::battle::fight(lua, &play.stats, enemy, &play.bag) {
-                    Ok(r) => r,
-                    Err(e) => {
-                        *status = format!("战斗规则出错：{e}");
-                        return false;
-                    }
-                };
+                let report =
+                    match rules.fight(&play.stats, enemy, &play.bag, &play.flags, &play.vars) {
+                        Ok(r) => r,
+                        Err(e) => {
+                            *status = format!("战斗规则出错：{e}");
+                            return false;
+                        }
+                    };
                 if !report.win() {
                     let why = if report.nowin == 2 {
                         "无敌"
@@ -368,7 +373,7 @@ pub fn step_hero(
                     );
                     return false;
                 }
-                kill = Some((i, report, enemy.gold, enemy.exp));
+                kill = Some((i, report, monster_id.clone()));
             }
             TemplateKind::Npc { dialog, .. } => {
                 *status = format!("NPC：{}", dialog.first().map_or("……", String::as_str));
@@ -418,6 +423,7 @@ pub fn step_hero(
                 // 真正的切层由外层窗口处理（要读别的楼层文件）
                 play.pending_floor = Some((to_floor.clone(), to_landing.clone()));
                 *status = format!("楼梯→{to_floor}:{to_landing}");
+                run_on_step(floor, play, ctx, status);
                 return true;
             }
             TemplateKind::Barrier { barrier_id } => {
@@ -431,6 +437,7 @@ pub fn step_hero(
                         *status = format!("未知路障：{barrier_id}");
                     }
                 }
+                run_on_step(floor, play, ctx, status);
                 return true;
             }
             TemplateKind::Landing { .. } | TemplateKind::Plate { .. } => {}
@@ -467,7 +474,7 @@ pub fn step_hero(
             *play.bag.entry(item_id.clone()).or_insert(0) += 1;
             *status = format!("捡起 {item_id}（{id}）");
         }
-    } else if let Some((i, report, gold, exp)) = kill {
+    } else if let Some((i, report, monster_id)) = kill {
         if i < floor.instances.len() {
             let inst = &floor.instances[i];
             let (id, lc) = (inst.id.clone(), inst.lifecycle());
@@ -476,15 +483,102 @@ pub fn step_hero(
                 play.once_done.insert(id.clone());
             }
             play.stats.hp -= report.damage;
-            play.stats.gold += gold;
-            play.stats.exp += exp;
-            *status = format!("击败 {id}：-{}血 +{}金 +{}经验", report.damage, gold, exp);
+            // 战后结算（金币经验/状态/神偷/退化/遗忘/仇恨）全交给 Lua 规则
+            let mut extra = String::new();
+            if let Some(rules) = ctx.rules
+                && let Some(enemy) = ctx.enemies.get(&monster_id)
+            {
+                match rules.after_win(&play.stats, enemy, &play.bag, &play.flags, &play.vars) {
+                    Ok(out) => {
+                        apply_rule_ops(play, &out.ops);
+                        extra = out.message;
+                    }
+                    Err(e) => extra = format!("战后规则出错：{e}"),
+                }
+            }
+            let tail = if extra.is_empty() {
+                String::new()
+            } else {
+                format!("，{extra}")
+            };
+            *status = format!("击败 {id}：-{}血{tail}", report.damage);
         }
     } else {
         *status = format!("({nx},{ny})");
     }
     sync_plates(floor, play);
+    run_on_step(floor, play, ctx, status);
     true
+}
+
+/// 每走一步的 Lua 规则（中毒/领域）：算完把 ops 落账，摘要附在 status 后面。
+fn run_on_step(floor: &Floor, play: &mut Playtest, ctx: &MoveCtx<'_>, status: &mut String) {
+    let Some(rules) = ctx.rules else {
+        return;
+    };
+    let near: Vec<(i32, i32, &mota_core::db::Enemy)> = floor
+        .instances
+        .iter()
+        .filter_map(|inst| match &inst.template {
+            TemplateKind::Monster { monster_id } => {
+                ctx.enemies.get(monster_id).map(|e| (inst.x, inst.y, e))
+            }
+            _ => None,
+        })
+        .collect();
+    let outcome = match rules.on_step(StepInput {
+        hero: &play.stats,
+        bag: &play.bag,
+        flags: &play.flags,
+        vars: &play.vars,
+        x: play.hero.0,
+        y: play.hero.1,
+        near: &near,
+    }) {
+        Ok(o) => o,
+        Err(e) => {
+            status.push_str(&format!("；触发规则出错：{e}"));
+            return;
+        }
+    };
+    apply_rule_ops(play, &outcome.ops);
+    if !outcome.message.is_empty() {
+        status.push('；');
+        status.push_str(&outcome.message);
+    }
+    if play.stats.hp <= 0 {
+        status.push_str("（生命耗尽）");
+    }
+}
+
+/// 执行 Lua 规则返回的 ops（HP/金币/经验/属性/物品/开关/变量）。
+fn apply_rule_ops(play: &mut Playtest, ops: &[Op]) {
+    for op in ops {
+        match op {
+            Op::Hp(n) => {
+                play.stats.hp = (play.stats.hp + n).clamp(0, play.stats.hp_max);
+            }
+            Op::Gold(n) => play.stats.gold = (play.stats.gold + n).max(0),
+            Op::Exp(n) => play.stats.exp = (play.stats.exp + n).max(0),
+            Op::Atk(n) => play.stats.atk = (play.stats.atk + n).max(0),
+            Op::Def(n) => play.stats.def = (play.stats.def + n).max(0),
+            Op::Mdef(n) => play.stats.mdef = (play.stats.mdef + n).max(0),
+            Op::Level(n) => play.stats.level = (play.stats.level + n).max(0),
+            Op::Take(id, n) => {
+                if let Some(cur) = play.bag.get_mut(id) {
+                    *cur -= n;
+                    if *cur <= 0 {
+                        play.bag.remove(id);
+                    }
+                }
+            }
+            Op::Give(id, n) => *play.bag.entry(id.clone()).or_insert(0) += n,
+            Op::Flag(name, value) => {
+                play.flags.insert(name.clone(), *value);
+            }
+            Op::Var(name, n) => *play.vars.entry(name.clone()).or_insert(0) += n,
+        }
+    }
 }
 
 /// 压力板同步：有箱子压住的板对应开为真，否则为假。
@@ -739,8 +833,8 @@ pub struct PlayViewIn<'a> {
     pub items: &'a HashMap<String, mota_core::db::Item>,
     pub barriers: &'a HashMap<String, mota_core::db::Barrier>,
     pub tiles: Option<&'a mota_core::tiles::Tileset>,
-    /// 战斗规则 Lua 源码（试玩碰怪用）。
-    pub battle_lua: Option<&'a str>,
+    /// 规则引擎（试玩碰怪/道具/每步触发用）。
+    pub rules: Option<&'a Rules>,
     pub status: &'a mut String,
     pub zoom: f32,
 }
@@ -868,13 +962,13 @@ fn break_doors(
 fn clear_break_tiles(
     floor: &mut Floor,
     play: &mut Playtest,
-    item: &mota_core::db::Item,
+    plan: &BreakPlan,
     in_range: impl Fn(i32, i32) -> bool,
 ) -> usize {
-    if item.break_tiles.is_empty() {
+    if plan.tiles.is_empty() {
         return 0;
     }
-    let z = item.break_layer.max(0) as usize;
+    let z = plan.layer;
     let id = floor.id.clone();
     let (w, h) = (floor.width as i32, floor.height as i32);
     let mut n = 0;
@@ -884,7 +978,7 @@ fn clear_break_tiles(
                 continue;
             }
             let tid = floor.tile(x, y, z);
-            if tid != 0 && item.break_tiles.contains(&tid) {
+            if tid != 0 && plan.tiles.contains(&tid) {
                 floor.set_tile(x, y, z, 0);
                 play.broken_tiles.insert((id.clone(), x, y, z));
                 n += 1;
@@ -894,67 +988,55 @@ fn clear_break_tiles(
     n
 }
 
-/// 用一件物品：血瓶加血、宝石加点、工具破坏面向/范围的门与地形。
+/// 用一件物品：效果规则在 items.lua，Rust 只执行返回的 ops / 破坏计划。
 fn use_item(
     floor: &mut Floor,
     play: &mut Playtest,
+    rules: Option<&Rules>,
     item: &mota_core::db::Item,
     status: &mut String,
 ) {
-    use mota_core::db::{GemStat, ItemKind};
     if play.bag.get(&item.id).copied().unwrap_or(0) <= 0 {
         *status = format!("{}：背包里没有这件物品", item.name);
         return;
     }
-    match &item.kind {
-        ItemKind::Potion { heal } => {
-            let before = play.stats.hp;
-            play.stats.hp = (play.stats.hp + heal).min(play.stats.hp_max);
-            *status = format!("{}：生命 +{}", item.name, play.stats.hp - before);
-            consume_item(play, &item.id);
+    let Some(rules) = rules else {
+        *status = "物品规则未载入".to_string();
+        return;
+    };
+    let outcome = match rules.use_item(&play.stats, &play.bag, item, &play.flags, &play.vars) {
+        Ok(o) => o,
+        Err(e) => {
+            *status = format!("物品规则出错：{e}");
+            return;
         }
-        ItemKind::Gem { stat, value } => {
-            let label = match stat {
-                GemStat::Atk => {
-                    play.stats.atk += value;
-                    "攻击"
-                }
-                GemStat::Def => {
-                    play.stats.def += value;
-                    "防御"
-                }
-                GemStat::Mdef => {
-                    play.stats.mdef += value;
-                    "魔防"
-                }
-                GemStat::Level => {
-                    play.stats.level += value;
-                    "等级"
-                }
-            };
-            *status = format!("{}：{label} +{value}", item.name);
-            consume_item(play, &item.id);
+    };
+    apply_rule_ops(play, &outcome.ops);
+    match &outcome.break_plan {
+        None => {
+            *status = outcome.message.clone();
+            if outcome.consume {
+                consume_item(play, &item.id);
+            }
         }
-        ItemKind::Cure { .. } => {
-            // 状态系统还没上：先提示，不消耗
-            *status = format!("{}：现在没有需要解除的状态", item.name);
-        }
-        ItemKind::Tool if !item.breaks.is_empty() || !item.break_tiles.is_empty() => {
+        Some(plan) => {
             let (dx, dy) = dir_delta(play.dir);
             let (hx, hy) = play.hero;
             let in_range = |x: i32, y: i32| -> bool {
-                if item.break_radius < 0 {
+                if plan.radius < 0 {
                     true
-                } else if item.break_radius == 0 {
+                } else if plan.radius == 0 {
                     (x, y) == (hx + dx, hy + dy)
                 } else {
-                    let r = item.break_radius as i32;
+                    let r = plan.radius as i32;
                     (x - hx).abs() <= r && (y - hy).abs() <= r
                 }
             };
-            let removed = break_doors(floor, &item.breaks, |inst| in_range(inst.x, inst.y));
-            let cleared = clear_break_tiles(floor, play, item, in_range);
-            if !removed.is_empty() || cleared > 0 {
+            let removed = break_doors(floor, &plan.doors, |inst| in_range(inst.x, inst.y));
+            let cleared = clear_break_tiles(floor, play, plan, in_range);
+            if removed.is_empty() && cleared == 0 {
+                *status = format!("{}：面前没有能破坏的东西", item.name);
+            } else {
                 // 破了要一直破：事件记一次性、地形记图块（切层重进都还在）
                 for id in &removed {
                     play.once_done.insert(id.clone());
@@ -968,15 +1050,7 @@ fn use_item(
                 if !item.reusable {
                     consume_item(play, &item.id);
                 }
-            } else {
-                *status = format!("{}：面前没有能破坏的东西", item.name);
             }
-        }
-        ItemKind::Tool => {
-            *status = format!("{}：暂时用不上", item.name);
-        }
-        _ => {
-            *status = format!("{}：不能直接使用", item.name);
         }
     }
 }
@@ -1119,7 +1193,7 @@ pub fn show_play_view(ui: &mut egui::Ui, inp: PlayViewIn<'_>) {
         items,
         barriers,
         tiles,
-        battle_lua,
+        rules,
         status,
         zoom,
     } = inp;
@@ -1158,11 +1232,16 @@ pub fn show_play_view(ui: &mut egui::Ui, inp: PlayViewIn<'_>) {
                     barriers,
                     enemies,
                     tiles,
-                    battle_lua,
+                    rules,
                 };
                 if step_hero(floor, play, &ctx, dx, dy, status) {
                     play.frame = (play.frame + 1) % 4;
-                    play.move_cd = 0.16;
+                    // 迟缓（7630 var56）：走路变慢
+                    play.move_cd = if play.flags.get("slow").copied().unwrap_or(false) {
+                        0.30
+                    } else {
+                        0.16
+                    };
                 } else {
                     play.move_cd = 0.22;
                 }
@@ -1189,7 +1268,7 @@ pub fn show_play_view(ui: &mut egui::Ui, inp: PlayViewIn<'_>) {
             if let Some(id) = usable.get(n)
                 && let Some(item) = items.get(id)
             {
-                use_item(floor, play, item, status);
+                use_item(floor, play, rules, item, status);
             }
         }
     }
@@ -1360,6 +1439,7 @@ mod tests {
             stats: mota_core::battle::Hero::default(),
             bag: HashMap::new(),
             flags: HashMap::new(),
+            vars: HashMap::new(),
             once_done: std::collections::HashSet::new(),
             broken_tiles: std::collections::HashSet::new(),
             pending_floor: None,
@@ -1431,13 +1511,14 @@ mod tests {
         play.stats.hp = 1000;
         play.stats.atk = 100;
         play.stats.def = 50;
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
         let ctx = MoveCtx {
             doors: &doors,
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: Some(mota_core::battle::EMBEDDED),
+            rules: Some(&rules),
         };
         // 怪90血/攻70/防20：每击80，90/80 不整除 → 1回合，(70-50)*1=20
         assert!(step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
@@ -1459,13 +1540,14 @@ mod tests {
         play.stats.hp = 10;
         play.stats.atk = 100;
         play.stats.def = 50;
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
         let ctx = MoveCtx {
             doors: &doors,
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: Some(mota_core::battle::EMBEDDED),
+            rules: Some(&rules),
         };
         assert!(!step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (0, 0));
@@ -1502,7 +1584,7 @@ mod tests {
             barriers,
             enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         }
     }
 
@@ -1645,8 +1727,9 @@ mod tests {
             &[],
             0,
         );
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert_eq!(play.stats.hp, 1000);
         assert_eq!(play.bag.get("red_potion"), Some(&1));
         assert!(status.contains("生命 +50"));
@@ -1659,19 +1742,20 @@ mod tests {
         let mut play = play_at(0, 0);
         play.dir = 6; // 朝右
         let item = test_item("pickaxe", mota_core::db::ItemKind::Tool, &["dark_wall"], 0);
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
         // 没带镐子：不该破坏
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert_eq!(f.instances.len(), 1);
         // 带镐子：破面前的墙并消耗；破掉的墙记进本局记录（切层不再长回来）
         play.bag.insert("pickaxe".to_string(), 1);
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert!(f.instances.is_empty());
         assert!(!play.bag.contains_key("pickaxe"));
         assert!(play.once_done.contains("w10"));
         // 再拿一把对空地用：不消耗，提示没有目标
         play.bag.insert("pickaxe".to_string(), 1);
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert!(status.contains("没有能破坏"));
         assert_eq!(play.bag.get("pickaxe"), Some(&1));
     }
@@ -1689,8 +1773,9 @@ mod tests {
             &["dark_wall"],
             -1,
         );
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert!(f.instances.is_empty());
         assert!(status.contains("破坏 2 处"));
         assert!(play.once_done.contains("w10") && play.once_done.contains("w20"));
@@ -1711,8 +1796,9 @@ mod tests {
         play.bag.insert("pickaxe".to_string(), 1);
         let mut item = test_item("pickaxe", mota_core::db::ItemKind::Tool, &["dark_wall"], 0);
         item.break_tiles = vec![389, 390, 391];
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert_eq!(f.tile(1, 0, 1), 0);
         assert!(status.contains("清地形 1 格"));
         assert!(play.broken_tiles.contains(&("t".to_string(), 1, 0, 1)));
@@ -1737,8 +1823,9 @@ mod tests {
             -1,
         );
         item.break_tiles = vec![389, 390, 391];
+        let rules = Rules::embedded().unwrap();
         let mut status = String::new();
-        use_item(&mut f, &mut play, &item, &mut status);
+        use_item(&mut f, &mut play, Some(&rules), &item, &mut status);
         assert_eq!(f.tile(1, 0, 1), 0);
         assert_eq!(f.tile(4, 4, 1), 0);
         assert_eq!(play.broken_tiles.len(), 2);
@@ -1813,7 +1900,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         };
         assert!(!step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (0, 0));
@@ -1838,7 +1925,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         };
         assert!(step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (1, 0));
@@ -1885,7 +1972,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         };
         assert!(step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (1, 0));
@@ -1922,7 +2009,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         };
         assert!(!step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (0, 0));
@@ -1955,7 +2042,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: None,
-            battle_lua: None,
+            rules: None,
         };
         assert!(step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(play.hero, (1, 0));
@@ -1986,7 +2073,7 @@ mod tests {
             barriers: &barriers,
             enemies: &enemies,
             tiles: Some(&tiles),
-            battle_lua: None,
+            rules: None,
         };
         assert!(!step_hero(&mut f, &mut play, &ctx, 1, 0, &mut status));
         assert_eq!(status, "图块挡路");

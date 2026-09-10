@@ -31,7 +31,7 @@ local balance = {
   mimic_rate = 1.0,          -- var60 模仿：勇攻 / 勇防
   counter_rate = 0.1,        -- var70 反击：勇攻 * 10%
   purify_rate = 3.0,         -- var104 净化：勇魔防 * 3
-  hate = 0,                  -- var111 已积累的仇恨值（无视防御）
+  weak_rate = 0.75,          -- var52 衰弱：攻防衰减为 75%
 
   invincible_item = "holy_cross", -- var71 破无敌物品
   damage_cap = 999999,       -- 7630 勇者生命上限
@@ -74,6 +74,12 @@ end
 function fight(hero, enemy)
   local log = {}
   local mhp, ma, md, mmd = hero.hp, hero.atk, hero.def, hero.mdef
+  -- 衰弱（switch15 状态）：攻防降到 75%
+  if hero.flags and hero.flags["weak"] then
+    ma = math.floor(ma * balance.weak_rate)
+    md = math.floor(md * balance.weak_rate)
+    log[#log + 1] = "衰弱中"
+  end
 
   -- 特技基础量（cal_enemy 52-102 行）
   local vampire = 0
@@ -130,7 +136,8 @@ function fight(hero, enemy)
     log[#log + 1] = "自爆"
   end
   if has_skill(enemy, "hate") then
-    hate = balance.hate
+    -- 仇恨值（var111）：无视防御，战后由 after_battle 减半
+    hate = (hero.vars and hero.vars["hate"]) or 0
     log[#log + 1] = "仇恨"
   end
 

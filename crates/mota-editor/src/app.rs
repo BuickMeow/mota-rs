@@ -33,6 +33,32 @@ fn blank_floor() -> Floor {
     }
 }
 
+/// 载入规则脚本：优先 `scripts/rules/*.lua`（可热改），缺文件回落到内置版本。
+fn load_rules() -> mota_core::rules::Rules {
+    let files = ["battle", "items", "after_battle", "on_step"];
+    let mut scripts = Vec::new();
+    for name in files {
+        match std::fs::read_to_string(format!("scripts/rules/{name}.lua")) {
+            Ok(text) => scripts.push(text),
+            Err(_) => {
+                // 任一文件缺失就整体用内置，避免磁盘/内置混版
+                scripts.clear();
+                break;
+            }
+        }
+    }
+    let refs: Vec<&str> = scripts.iter().map(String::as_str).collect();
+    if refs.len() == files.len() {
+        mota_core::rules::Rules::from_scripts(&refs)
+    } else {
+        mota_core::rules::Rules::embedded()
+    }
+    .unwrap_or_else(|e| {
+        eprintln!("规则脚本载入失败：{e}，改用内置版本");
+        mota_core::rules::Rules::embedded().expect("内置规则必须能载入")
+    })
+}
+
 /// 素材目录：优先工作区 `assets/Graphics`，其次可执行文件旁（发行版布局）。
 fn detect_gfx_dir() -> PathBuf {
     let cwd = PathBuf::from("assets/Graphics");
@@ -76,8 +102,8 @@ pub struct EditorApp {
     tiles: Option<Tileset>,
     /// 勇士初始属性（`data/hero.json`，试玩开档用）。
     hero: mota_core::battle::Hero,
-    /// 战斗规则 Lua 源码（`scripts/rules/battle.lua`，缺文件用内置）。
-    battle_lua: String,
+    /// 规则引擎：`scripts/rules/*.lua`（缺文件用内置 include_str! 版本）。
+    rules: mota_core::rules::Rules,
     /// 工作区 `data/floors` 楼层 (id, name)（地图树用）。
     floors: Vec<(String, String)>,
     /// 魔塔样板组折叠状态（默认展开）。
@@ -162,8 +188,7 @@ impl EditorApp {
             .ok()
             .and_then(|text| serde_json::from_str::<mota_core::battle::Hero>(&text).ok())
             .unwrap_or_default();
-        let battle_lua = std::fs::read_to_string("scripts/rules/battle.lua")
-            .unwrap_or_else(|_| mota_core::battle::EMBEDDED.to_string());
+        let rules = load_rules();
         let status = if gfx_dir.is_dir() {
             format!(
                 "已载入开始地图 m02 · 素材 {} · 门{}种/怪{}种/物{}种/障{}种/块表{}",
@@ -197,7 +222,7 @@ impl EditorApp {
             barriers,
             tiles,
             hero,
-            battle_lua,
+            rules,
             floors: list_floors(),
             tower_open: true,
             zoom: 1.0,
@@ -284,9 +309,8 @@ impl EditorApp {
             self.play_placed = false;
             self.status = "回编辑模式".to_string();
         } else {
-            // 开试玩前重读规则/初始属性：调 battle.lua / hero.json 不用重启编辑器
-            self.battle_lua = std::fs::read_to_string("scripts/rules/battle.lua")
-                .unwrap_or_else(|_| mota_core::battle::EMBEDDED.to_string());
+            // 开试玩前重读规则/初始属性：改 scripts/rules/*.lua 和 hero.json 不用重启编辑器
+            self.rules = load_rules();
             if let Ok(text) = std::fs::read_to_string("data/hero.json")
                 && let Ok(h) = serde_json::from_str::<mota_core::battle::Hero>(&text)
             {
@@ -370,7 +394,7 @@ impl EditorApp {
                                 items: &self.items,
                                 barriers: &self.barriers,
                                 tiles: self.tiles.as_ref(),
-                                battle_lua: Some(&self.battle_lua),
+                                rules: Some(&self.rules),
                                 status: &mut self.status,
                                 zoom,
                             },
