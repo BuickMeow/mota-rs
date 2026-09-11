@@ -1,13 +1,13 @@
 {
   "height": 19,
-  "id": "m03",
+  "id": "template",
   "instances": [
     {
-      "id": "m03_e001",
+      "id": "template_e001",
       "lifecycle": null,
       "template": {
         "kind": "stair_up",
-        "to_floor": "m02",
+        "to_floor": "start",
         "to_landing": "入口"
       },
       "trigger": null,
@@ -18,7 +18,7 @@
       "walk_anime": true
     },
     {
-      "id": "m03_land_down",
+      "id": "template_land_down",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -31,11 +31,11 @@
       "y": 1
     },
     {
-      "id": "m03_e002",
+      "id": "template_e002",
       "lifecycle": null,
       "template": {
         "kind": "stair_up",
-        "to_floor": "m04",
+        "to_floor": "1_1",
         "to_landing": "下楼梯"
       },
       "trigger": null,
@@ -46,7 +46,7 @@
       "walk_anime": true
     },
     {
-      "id": "m03_land_up",
+      "id": "template_land_up",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -59,7 +59,7 @@
       "y": 0
     },
     {
-      "id": "m03_e004",
+      "id": "template_e004",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -72,7 +72,7 @@
       "y": 0
     },
     {
-      "id": "m03_e005",
+      "id": "template_e005",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -85,7 +85,7 @@
       "y": 1
     },
     {
-      "id": "m03_e022",
+      "id": "template_e022",
       "lifecycle": "once",
       "template": {
         "dialog": [
@@ -100,7 +100,9 @@
           "      对话记录只支持固定数字的楼层。"
         ],
         "kind": "npc",
-        "route": []
+        "route": [
+
+        ]
       },
       "trigger": null,
       "visible_flag": null,
@@ -116,11 +118,11 @@
       "step_anime": true
     },
     {
-      "id": "m03_e026",
+      "id": "template_e026",
       "lifecycle": null,
       "template": {
         "kind": "stair_up",
-        "to_floor": "m01",
+        "to_floor": "0_0",
         "to_landing": "传送落点"
       },
       "trigger": null,
@@ -131,7 +133,7 @@
       "step_anime": true
     },
     {
-      "id": "m03_e028",
+      "id": "template_e028",
       "lifecycle": "once",
       "template": {
         "dialog": [
@@ -140,7 +142,9 @@
           "以方便玩家的地图观察"
         ],
         "kind": "npc",
-        "route": []
+        "route": [
+
+        ]
       },
       "trigger": null,
       "visible_flag": null,
@@ -156,7 +160,7 @@
       "step_anime": true
     },
     {
-      "id": "m03_land_tele",
+      "id": "template_land_tele",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -1604,5 +1608,6 @@
   ],
   "name": "魔塔样板",
   "spawn": null,
-  "width": 23
+  "width": 23,
+  "order": 3
 }

@@ -1,14 +1,14 @@
 {
   "height": 15,
-  "id": "m08",
+  "id": "1_-1",
   "instances": [
     {
-      "id": "m08_e002",
+      "id": "1_-1_e001",
       "lifecycle": null,
       "template": {
-        "kind": "stair_up",
-        "to_floor": "m06",
-        "to_landing": "下楼梯"
+        "kind": "stair_down",
+        "to_floor": "1_-2",
+        "to_landing": "上楼梯"
       },
       "trigger": null,
       "visible_flag": null,
@@ -18,11 +18,11 @@
       "walk_anime": true
     },
     {
-      "id": "m08_land_up",
+      "id": "1_-1_land_down",
       "lifecycle": null,
       "template": {
         "kind": "landing",
-        "name": "上楼梯"
+        "name": "下楼梯"
       },
       "trigger": null,
       "visible_flag": null,
@@ -31,7 +31,35 @@
       "y": 13
     },
     {
-      "id": "m08_e004",
+      "id": "1_-1_e002",
+      "lifecycle": null,
+      "template": {
+        "kind": "stair_up",
+        "to_floor": "0_0",
+        "to_landing": "下楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 13,
+      "walk_anime": true
+    },
+    {
+      "id": "1_-1_land_up",
+      "lifecycle": null,
+      "template": {
+        "kind": "landing",
+        "name": "上楼梯"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 13
+    },
+    {
+      "id": "1_-1_e004",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -41,10 +69,10 @@
       "visible_flag": null,
       "visual": null,
       "x": 7,
-      "y": 1
+      "y": 13
     },
     {
-      "id": "m08_e005",
+      "id": "1_-1_e005",
       "lifecycle": null,
       "template": {
         "kind": "landing",
@@ -53,18 +81,23 @@
       "trigger": null,
       "visible_flag": null,
       "visual": null,
-      "x": 7,
+      "x": 17,
       "y": 13
     },
     {
-      "id": "m08_e006",
+      "id": "1_-1_e006",
       "lifecycle": "once",
       "template": {
         "dialog": [
-          "\\m[老人]漆黑层的做法请看本地图-事件3"
+          "\\m[老人]这是最佳的对话记录长度，",
+          "超过26个字就会发现字变小了！@clue",
+          "上面是一个仿50层魔塔的商店",
+          "\\m[老人]"
         ],
         "kind": "npc",
-        "route": []
+        "route": [
+
+        ]
       },
       "trigger": null,
       "visible_flag": null,
@@ -75,295 +108,187 @@
         "row": 0,
         "opacity": 255
       },
-      "x": 6,
-      "y": 6,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e007",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 12,
-      "y": 11,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e008",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 14,
-      "y": 11,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e009",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 15,
-      "y": 8,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e010",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
       "x": 17,
-      "y": 8,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e011",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 16,
-      "y": 5,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e012",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 16,
       "y": 3,
       "step_anime": true
     },
     {
-      "id": "m08_e013",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 13,
-      "y": 2,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e014",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 13,
-      "y": 4,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e015",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 11,
-      "y": 4,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e016",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 11,
-      "y": 2,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e017",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "key_bearer"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 6,
-      "y": 11,
-      "walk_anime": true,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e018",
+      "id": "1_-1_e007",
       "lifecycle": null,
       "template": {
         "dialog": [
-          "\\m[\\n[1]]你好！",
-          "重生、变身、掉宝事件三者之间有冲突。",
-          "若指定怪物重生，则忽略另外两个。若指定怪物变",
-          "身而不指定重生，则忽略掉宝事件。只有怪物同时",
-          "没有重生、变身，掉宝事件才执行。\\m[魔塔作家]"
+
         ],
         "kind": "npc",
-        "route": []
+        "route": [
+
+        ]
       },
       "trigger": null,
       "visible_flag": null,
       "visual": {
-        "file": "022-Braver12",
+        "file": "002-npc02",
+        "hue": 0,
+        "col": 0,
+        "row": 2,
+        "opacity": 255
+      },
+      "x": 17,
+      "y": 1,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e009",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "big_bat"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 5,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e010",
+      "lifecycle": null,
+      "template": {
+        "item_id": "candle",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 9,
+      "y": 4
+    },
+    {
+      "id": "1_-1_e011",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]下面的-2层是一个漆黑的世界，",
+          "蜡烛可以有效的帮助你在漆黑的世界里冒险"
+        ],
+        "kind": "npc",
+        "route": [
+
+        ]
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
         "hue": 0,
         "col": 0,
         "row": 0,
         "opacity": 255
       },
+      "x": 8,
+      "y": 13,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e012",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "black_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 9,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e013",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 17,
+      "y": 10
+    },
+    {
+      "id": "1_-1_e014",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 10
+    },
+    {
+      "id": "1_-1_e015",
+      "lifecycle": null,
+      "template": {
+        "item_id": "blue_potion",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 11
+    },
+    {
+      "id": "1_-1_e016",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "blue_guard"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
       "x": 9,
-      "y": 11,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e019",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 12,
-      "y": 3,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e020",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 12,
-      "y": 1,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e021",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 12,
       "y": 5,
       "step_anime": true
     },
     {
-      "id": "m08_e022",
+      "id": "1_-1_e017",
       "lifecycle": null,
       "template": {
         "kind": "monster",
-        "monster_id": "clamp_slug"
+        "monster_id": "red_guard"
       },
       "trigger": null,
       "visible_flag": null,
       "visual": null,
-      "x": 6,
-      "y": 4,
+      "x": 11,
+      "y": 5,
       "step_anime": true
     },
     {
-      "id": "m08_e023",
+      "id": "1_-1_e018",
       "lifecycle": null,
       "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
+        "item_id": "atk_staff",
+        "kind": "item"
       },
       "trigger": null,
       "visible_flag": null,
       "visual": null,
-      "x": 8,
-      "y": 4,
-      "step_anime": true
+      "x": 7,
+      "y": 6
     },
     {
-      "id": "m08_e024",
+      "id": "1_-1_e019",
       "lifecycle": null,
       "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 6,
-      "y": 3,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e025",
-      "lifecycle": null,
-      "template": {
-        "kind": "monster",
-        "monster_id": "clamp_slug"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 8,
-      "y": 3,
-      "step_anime": true
-    },
-    {
-      "id": "m08_e026",
-      "lifecycle": null,
-      "template": {
-        "item_id": "yellow_potion",
+        "item_id": "def_staff",
         "kind": "item"
       },
       "trigger": null,
@@ -373,7 +298,185 @@
       "y": 2
     },
     {
-      "id": "m08_e027",
+      "id": "1_-1_e020",
+      "lifecycle": null,
+      "template": {
+        "item_id": "mdef_staff",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 11,
+      "y": 2
+    },
+    {
+      "id": "1_-1_e021",
+      "lifecycle": null,
+      "template": {
+        "item_id": "hp_staff",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 3
+    },
+    {
+      "id": "1_-1_e022",
+      "lifecycle": null,
+      "template": {
+        "item_id": "combo_staff",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 7,
+      "y": 10
+    },
+    {
+      "id": "1_-1_e023",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 7,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e024",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "red_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 12,
+      "y": 5,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e025",
+      "lifecycle": "once",
+      "template": {
+        "dialog": [
+          "\\m[老人]一个典型的杀怪开门的例子！@clue"
+        ],
+        "kind": "npc",
+        "route": [
+
+        ]
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "001-npc01",
+        "hue": 0,
+        "col": 0,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 14,
+      "y": 7,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e026",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "skeleton_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 13,
+      "y": 7,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e027",
+      "lifecycle": null,
+      "template": {
+        "door_id": "dark_wall",
+        "kind": "door"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": {
+        "file": "202-other02",
+        "hue": 0,
+        "col": 3,
+        "row": 0,
+        "opacity": 255
+      },
+      "x": 14,
+      "y": 6
+    },
+    {
+      "id": "1_-1_e028",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "white_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 9,
+      "y": 11,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e029",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "white_knight"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 11,
+      "y": 11,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e030",
+      "lifecycle": null,
+      "template": {
+        "item_id": "anti_clamp",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 10
+    },
+    {
+      "id": "1_-1_e031",
+      "lifecycle": null,
+      "template": {
+        "kind": "box"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 10,
+      "y": 7
+    },
+    {
+      "id": "1_-1_e033",
       "lifecycle": null,
       "template": {
         "kind": "monster",
@@ -382,13 +485,13 @@
       "trigger": null,
       "visible_flag": null,
       "visual": null,
-      "x": 9,
-      "y": 13,
+      "x": 15,
+      "y": 9,
       "walk_anime": true,
       "step_anime": true
     },
     {
-      "id": "m08_e028",
+      "id": "1_-1_e034",
       "lifecycle": null,
       "template": {
         "door_id": "dark_wall",
@@ -403,174 +506,79 @@
         "row": 0,
         "opacity": 255
       },
-      "x": 11,
-      "y": 12
+      "x": 17,
+      "y": 5
     },
     {
-      "id": "m08_e029",
+      "id": "1_-1_e035",
       "lifecycle": null,
       "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 14,
-      "y": 8
-    },
-    {
-      "id": "m08_e030",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 14,
-      "y": 1
-    },
-    {
-      "id": "m08_e031",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 10,
-      "y": 2
-    },
-    {
-      "id": "m08_e032",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 10,
-      "y": 1
-    },
-    {
-      "id": "m08_e033",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 11,
-      "y": 1
-    },
-    {
-      "id": "m08_e034",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": {
-        "file": "203-other03",
-        "hue": 0,
-        "col": 2,
-        "row": 0,
-        "opacity": 255
-      },
-      "x": 9,
-      "y": 2
-    },
-    {
-      "id": "m08_e035",
-      "lifecycle": null,
-      "template": {
-        "item_id": "anti_retreat",
+        "item_id": "anything_door",
         "kind": "item"
       },
       "trigger": null,
       "visible_flag": null,
       "visual": null,
       "x": 17,
-      "y": 13
+      "y": 6
     },
     {
-      "id": "m08_e036",
+      "id": "1_-1_e036",
       "lifecycle": null,
       "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
+        "item_id": "yellow_key",
+        "kind": "item"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 18,
+      "y": 7
+    },
+    {
+      "id": "1_-1_e037",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "small_wizard"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 14,
+      "y": 11,
+      "walk_anime": true,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e038",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "mid_wizard"
+      },
+      "trigger": null,
+      "visible_flag": null,
+      "visual": null,
+      "x": 15,
+      "y": 11,
+      "walk_anime": true,
+      "step_anime": true
+    },
+    {
+      "id": "1_-1_e039",
+      "lifecycle": null,
+      "template": {
+        "kind": "monster",
+        "monster_id": "grand_wizard"
       },
       "trigger": null,
       "visible_flag": null,
       "visual": null,
       "x": 16,
-      "y": 10
-    },
-    {
-      "id": "m08_e037",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 17,
-      "y": 11
-    },
-    {
-      "id": "m08_e038",
-      "lifecycle": null,
-      "template": {
-        "door_id": "dark_wall",
-        "kind": "door"
-      },
-      "trigger": null,
-      "visible_flag": null,
-      "visual": null,
-      "x": 17,
-      "y": 12
+      "y": 11,
+      "walk_anime": true,
+      "step_anime": true
     }
   ],
   "layers": [
@@ -1034,9 +1042,31 @@
         0,
         0,
         0,
+        391,
+        0,
+        391,
+        0
+      ],
+      [
         0,
         0,
         0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        391,
+        0,
+        391,
         0
       ],
       [
@@ -1093,10 +1123,32 @@
         0,
         0,
         0,
+        391,
+        391,
+        391,
+        391,
         0,
         0,
         0,
         0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        391,
+        0,
+        391,
+        391,
         0,
         0,
         0,
@@ -1118,51 +1170,7 @@
         0,
         0,
         0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        391,
         0,
         0,
         0,
@@ -1268,19 +1276,19 @@
         0,
         0,
         0,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        635,
         0,
-        0,
-        391,
-        391,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        391,
-        0,
-        0,
+        637,
         0
       ],
       [
@@ -1290,60 +1298,16 @@
         0,
         0,
         0,
-        391,
+        428,
+        0,
+        642,
+        643,
         0,
         0,
+        648,
+        649,
         0,
-        0,
-        0,
-        0,
-        0,
-        391,
-        0,
-        391,
-        391,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        391,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        391,
-        0,
-        0
-      ],
-      [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        391,
-        0,
-        0,
-        0,
-        391,
-        0,
+        428,
         0,
         0,
         0,
@@ -1356,18 +1320,18 @@
         0,
         0,
         0,
+        428,
+        0,
+        428,
+        428,
+        428,
+        428,
+        428,
+        428,
+        0,
+        428,
         0,
         0,
-        391,
-        391,
-        391,
-        0,
-        0,
-        0,
-        391,
-        391,
-        0,
-        391,
         0,
         0
       ],
@@ -1378,18 +1342,18 @@
         0,
         0,
         0,
-        0,
-        391,
-        0,
-        0,
-        0,
+        428,
+        640,
+        428,
         0,
         0,
         0,
         0,
-        391,
+        428,
+        650,
+        428,
         0,
-        391,
+        0,
         0,
         0
       ],
@@ -1400,18 +1364,18 @@
         0,
         0,
         0,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
-        391,
+        428,
+        641,
+        428,
+        0,
+        0,
+        0,
+        0,
+        428,
+        651,
+        428,
+        0,
+        0,
         0,
         0
       ],
@@ -1422,13 +1386,35 @@
         0,
         0,
         0,
-        391,
+        428,
+        0,
+        428,
+        0,
+        0,
+        0,
+        0,
+        428,
+        0,
+        428,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
         0,
         0,
         0,
         0,
         0,
-        391,
+        0,
+        428,
+        0,
+        428,
+        0,
+        0,
+        0,
+        0,
         0,
         0,
         0,
@@ -1444,37 +1430,15 @@
         0,
         0,
         0,
-        0,
-        0,
-        391,
-        0,
-        391,
-        0,
-        0,
-        0,
-        391,
-        391,
-        0,
-        391,
-        391,
-        0
-      ],
-      [
+        428,
+        656,
+        428,
         0,
         0,
         0,
         0,
         0,
         0,
-        391,
-        391,
-        391,
-        391,
-        391,
-        0,
-        391,
-        391,
-        391,
         0,
         0,
         0,
@@ -1488,16 +1452,16 @@
         0,
         0,
         0,
+        428,
+        657,
+        428,
         0,
         0,
         0,
         0,
-        391,
         0,
         0,
         0,
-        0,
-        391,
         0,
         0,
         0,
@@ -1510,16 +1474,38 @@
         0,
         0,
         0,
-        391,
-        391,
+        428,
         0,
-        391,
-        391,
+        428,
         0,
-        391,
         0,
-        391,
-        391,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        428,
+        428,
+        428,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         0,
         0,
         0,
@@ -1541,10 +1527,32 @@
         0,
         0,
         0,
-        391,
         0,
         0,
-        391,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         0
       ],
       [
@@ -1571,7 +1579,11 @@
       ]
     ]
   ],
-  "name": "1:-2",
+  "name": "1:-1",
   "spawn": null,
-  "width": 20
+  "width": 20,
+  "tower": 1,
+  "level": -1,
+  "order": 6,
+  "parent": "template"
 }

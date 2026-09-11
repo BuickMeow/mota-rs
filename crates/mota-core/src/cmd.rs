@@ -72,7 +72,7 @@ mod tests {
                 value: true,
             },
             Cmd::Teleport {
-                floor: "m05".to_string(),
+                floor: "1_2".to_string(),
                 landing: "下楼梯".to_string(),
             },
         ];
@@ -80,7 +80,7 @@ mod tests {
         let back: Vec<Cmd> = serde_json::from_str(&json).unwrap();
         assert_eq!(back.len(), 4);
         assert!(matches!(&back[0], Cmd::Talk { lines } if lines.len() == 1));
-        assert!(matches!(&back[3], Cmd::Teleport { floor, .. } if floor == "m05"));
+        assert!(matches!(&back[3], Cmd::Teleport { floor, .. } if floor == "1_2"));
     }
 
     #[test]

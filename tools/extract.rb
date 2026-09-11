@@ -6,13 +6,13 @@
 # 用法：
 #   ruby tools/extract.rb dump <rxdata|Map004> [事件id...]   地图事件 / 公共事件列表
 #   ruby tools/extract.rb ce <id>                           单个公共事件的指令
-#   ruby tools/extract.rb patch-floors                       把 .rxdata 可推导字段回填 data/floors
+#   ruby tools/extract.rb patch-floors                       把 .rxdata 可推导字段回填 data/maps
 #
 # patch-floors 只回填能由地图数据推导的字段（保留手工命名/贴图/id）：
 #   - NPC 生命周期（CE13 → once；switch32 置位 → respawn_on_reenter）
 #   - 行走/停止时动画（walk_anime / step_anime）
 #   - 复活怪（有 revive 特技）的 respawn_on_reenter
-#   - 开始地图（m02）的自动剧情 intro（台词 + 播完传送坐标）
+#   - 开始地图（start）的自动剧情 intro（台词 + 播完传送坐标）
 #
 # 为什么不做"全量重生成"：怪物/物品/门的 id 与贴图是早期提取时手工命名/挑选的，
 # 没有可推导的映射；这里只维护能自动推导的部分，避免把 id 打乱。
@@ -22,7 +22,7 @@ require_relative "rxdata"
 
 ROOT = File.expand_path("..", __dir__)
 SAMPLE_DATA = File.join(ROOT, "samples/魔塔样板7630·改/Data")
-FLOORS_DIR = File.join(ROOT, "data/floors")
+FLOORS_DIR = File.join(ROOT, "data/maps")
 ENEMIES_DIR = File.join(ROOT, "data/enemies")
 
 def load_map(path)
@@ -121,16 +121,44 @@ end
 # ---------------------------------------------------------------------------
 # patch-floors：从 .rxdata 回填可推导字段
 # ---------------------------------------------------------------------------
+# MapNNN.rxdata → data/maps 的 id（:` 不能做文件名，显示名仍留在 name 字段）
+MAP_STEMS = {
+  1 => "0_0",     # 00 层
+  2 => "start",   # 开始地图
+  3 => "template", # 魔塔样板
+  4 => "1_1",
+  5 => "1_2",
+  6 => "1_-1",
+  7 => "blank",
+  8 => "1_-2",
+}.freeze
+
 def cmd_patch_floors(_argv)
-  (1..8).each do |n|
-    stem = format("m%02d", n)
+  infos = Rxdata.load(File.join(SAMPLE_DATA, "MapInfos.rxdata"))
+  stem_of = MAP_STEMS # map_no => stem
+
+  MAP_STEMS.each do |map_no, stem|
     json_path = File.join(FLOORS_DIR, "#{stem}.json")
-    map_path = File.join(SAMPLE_DATA, format("Map%03d.rxdata", n))
+    map_path = File.join(SAMPLE_DATA, format("Map%03d.rxdata", map_no))
     next unless File.exist?(json_path) && File.exist?(map_path)
 
     events = load_map(map_path).instance_variable_get(:@events)
     obj = JSON.parse(File.read(json_path))
     changed = 0
+
+    # 地图树：名字/父节点/排序都来自 MapInfos（RMXP 原生结构）
+    info = infos[map_no]
+    if info
+      name = Rxdata.text(info.instance_variable_get(:@name))
+      parent_id = info.instance_variable_get(:@parent_id).to_i
+      parent = parent_id.zero? ? nil : stem_of[parent_id]
+      order = info.instance_variable_get(:@order).to_i
+      { "name" => name, "parent" => parent, "order" => order }.each do |key, value|
+        next if obj[key] == value
+        obj[key] = value
+        changed += 1
+      end
+    end
 
     (obj["instances"] || []).each do |inst|
       m = inst["id"].match(/_e(\d+)$/)
@@ -145,7 +173,7 @@ def cmd_patch_floors(_argv)
       changed += patch_lifecycle(inst, page)
     end
 
-    if stem == "m02"
+    if stem == "start"
       intro = map_intro(events)
       if intro && obj["intro"] != intro
         obj["intro"] = intro
@@ -158,6 +186,19 @@ def cmd_patch_floors(_argv)
     File.write(json_path, JSON.pretty_generate(obj) + "\n")
     puts "#{stem}: 更新 #{changed} 处"
   end
+
+  # 工程名（地图树根节点）：取自样例工程目录名
+  write_project_name
+end
+
+def write_project_name
+  name = File.basename(File.dirname(SAMPLE_DATA))
+  path = File.join(ROOT, "data/project.json")
+  current = File.exist?(path) ? JSON.parse(File.read(path)) : {}
+  return if current["name"] == name
+
+  File.write(path, JSON.pretty_generate(current.merge("name" => name)) + "\n")
+  puts "project.json: #{name}"
 end
 
 def patch_anim(inst, page)
@@ -241,7 +282,7 @@ def map_intro(events)
       (pg.instance_variable_get(:@list) || []).each do |c|
         next unless c.instance_variable_get(:@code) == 201
         p = c.instance_variable_get(:@parameters) || []
-        target = { floor: format("m%02d", p[1].to_i), x: p[2].to_i, y: p[3].to_i } if p[0].to_i.zero?
+        target = { floor: MAP_STEMS[p[1].to_i] || p[1].to_s, x: p[2].to_i, y: p[3].to_i } if p[0].to_i.zero?
       end
     end
 

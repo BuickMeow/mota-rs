@@ -36,7 +36,7 @@ fn example_data_parses() {
     assert!(item.passive);
 
     let floor: map::Floor =
-        serde_json::from_str(include_str!("../../../data/floors/m04.json")).expect("m04.json");
+        serde_json::from_str(include_str!("../../../data/maps/1_1.json")).expect("1_1.json");
     assert!(!floor.instances.is_empty());
 }
 
@@ -109,7 +109,7 @@ fn all_tables_parse_and_match_schema() {
 /// 楼层交叉引用：怪/物/门/路障 id 必须在表里，商店必须存在，
 /// 楼梯目标楼必须存在且落脚点在目标楼。
 #[test]
-fn floors_reference_known_ids() {
+fn maps_reference_known_ids() {
     use std::collections::HashSet;
     let ids = |dir: &str| -> HashSet<String> {
         read_json(dir)
@@ -124,7 +124,7 @@ fn floors_reference_known_ids() {
     let shops = ids("shops");
 
     // 先把所有楼解析出来（id → 落脚点名集合）
-    let floors = read_json("floors");
+    let floors = read_json("maps");
     assert!(!floors.is_empty());
     let mut landings: HashMap<String, HashSet<String>> = HashMap::new();
     let mut parsed: Vec<(String, map::Floor)> = Vec::new();

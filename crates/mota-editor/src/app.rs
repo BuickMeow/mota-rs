@@ -15,8 +15,8 @@ use crate::palette::{BrushKind, LeftTab, PaletteState};
 use crate::{canvas, inspector};
 use mota_core::runtime::{Dialog, Playtest, apply_broken_tiles, apply_once_done};
 
-/// 启动落在 7630 的「开始地图」（m02，必须保留），出生点在 S 标志处。
-const START_FLOOR: &str = include_str!("../../../data/floors/m02.json");
+/// 启动落在 7630 的「开始地图」（start，必须保留），出生点在 S 标志处。
+const START_FLOOR: &str = include_str!("../../../data/maps/start.json");
 
 /// 真地面（Map004 底色，石板路）。
 const GROUND_TILE: i32 = 395;
@@ -31,6 +31,10 @@ fn blank_floor() -> Floor {
         instances: Vec::new(),
         spawn: Some((10, 13)),
         intro: None,
+        tower: None,
+        level: None,
+        parent: None,
+        order: None,
     }
 }
 
@@ -133,41 +137,152 @@ pub struct EditorApp {
     hero: mota_core::battle::Hero,
     /// 规则引擎：`scripts/rules/*.lua`（缺文件用内置 include_str! 版本）。
     rules: mota_core::rules::Rules,
-    /// 工作区 `data/floors` 楼层 (id, name)（地图树用）。
-    floors: Vec<(String, String)>,
-    /// 魔塔样板组折叠状态（默认展开）。
-    tower_open: bool,
+    /// 工作区 `data/maps` 地图（地图树用）。
+    maps: Vec<MapEntry>,
+    /// 工程名（地图树根节点，`data/project.json`）。
+    project_name: String,
+    /// 折叠的地图节点 id（默认全展开；根节点 id 用 "root"）。
+    collapsed: std::collections::HashSet<String>,
     zoom: f32,
     show_grid: bool,
     show_about: bool,
     zoom_init: bool,
 }
 
-/// 工作区 `data/floors` 下的楼层 (id, name)（地图树用）。
-/// name 读对应 JSON 的 name 字段，解析失败回落用 stem 当 name。
-fn list_floors() -> Vec<(String, String)> {
-    let Ok(rd) = std::fs::read_dir("data/floors") else {
+/// 地图条目（地图树用）：id 是文件名，结构字段来自 RMXP MapInfos。
+#[derive(Debug, Clone)]
+struct MapEntry {
+    id: String,
+    name: String,
+    parent: Option<String>,
+    order: Option<i64>,
+}
+
+/// 工作区 `data/maps` 下的地图；name/parent/order 读 JSON，解析失败回落 stem。
+fn list_maps() -> Vec<MapEntry> {
+    let Ok(rd) = std::fs::read_dir("data/maps") else {
         return Vec::new();
     };
-    let mut stems: Vec<String> = rd
+    let mut entries: Vec<MapEntry> = rd
         .filter_map(|e| e.ok())
         .map(|e| e.path())
         .filter(|p| p.extension().map(|x| x == "json").unwrap_or(false))
-        .filter_map(|p| p.file_stem().and_then(|x| x.to_str()).map(str::to_string))
-        .collect();
-    stems.sort();
-    stems
-        .into_iter()
-        .map(|stem| {
-            let path = PathBuf::from("data/floors").join(format!("{stem}.json"));
-            let name = std::fs::read_to_string(&path)
+        .filter_map(|p| {
+            let stem = p.file_stem().and_then(|x| x.to_str())?.to_string();
+            let v = std::fs::read_to_string(&p)
                 .ok()
-                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
-                .and_then(|v| v.get("name").and_then(|n| n.as_str()).map(str::to_string))
+                .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())?;
+            let name = v
+                .get("name")
+                .and_then(|n| n.as_str())
+                .map(str::to_string)
                 .unwrap_or_else(|| stem.clone());
-            (stem, name)
+            let str_of = |key: &str| v.get(key).and_then(|x| x.as_str()).map(str::to_string);
+            Some(MapEntry {
+                id: stem,
+                name,
+                parent: str_of("parent"),
+                order: v.get("order").and_then(|x| x.as_i64()),
+            })
         })
-        .collect()
+        .collect();
+    entries.sort_by_key(|m| (m.order.unwrap_or(i64::MAX), m.id.clone()));
+    entries
+}
+
+/// 工程名（地图树根节点）：`data/project.json` 的 name。
+fn load_project_name() -> String {
+    std::fs::read_to_string("data/project.json")
+        .ok()
+        .and_then(|t| serde_json::from_str::<serde_json::Value>(&t).ok())
+        .and_then(|v| v.get("name").and_then(|n| n.as_str()).map(str::to_string))
+        .unwrap_or_else(|| "mota-rs".to_string())
+}
+
+/// 取某父节点下的子图，按 order 排序（None 最后，再按 id）。
+fn children_of<'a>(maps: &'a [MapEntry], parent: Option<&str>) -> Vec<&'a MapEntry> {
+    let mut v: Vec<&MapEntry> = maps
+        .iter()
+        .filter(|m| m.parent.as_deref() == parent)
+        .collect();
+    v.sort_by_key(|m| (m.order.unwrap_or(i64::MAX), m.id.clone()));
+    v
+}
+
+/// 画一层地图树；返回被点击要打开的地图 id。
+/// parent=None 画顶层；每个节点带 chevron/文件夹（有子图）或文件图标。
+fn show_map_tree(
+    ui: &mut egui::Ui,
+    maps: &[MapEntry],
+    collapsed: &mut std::collections::HashSet<String>,
+    current: &str,
+    parent: Option<&str>,
+) -> Option<String> {
+    use egui_material_icons::icons::*;
+    let mut open = None;
+    for m in children_of(maps, parent) {
+        let kids = maps
+            .iter()
+            .any(|c| c.parent.as_deref() == Some(m.id.as_str()));
+        let is_collapsed = collapsed.contains(&m.id);
+        let mut toggle = false;
+        ui.horizontal(|ui| {
+            if kids {
+                let chev = if is_collapsed {
+                    ICON_CHEVRON_RIGHT
+                } else {
+                    ICON_EXPAND_MORE
+                };
+                if ui
+                    .add(egui::Label::new(chev.rich_text().size(14.0)).sense(egui::Sense::click()))
+                    .clicked()
+                {
+                    toggle = true;
+                }
+                if ui
+                    .add(
+                        egui::Label::new(ICON_FOLDER.rich_text().size(14.0))
+                            .sense(egui::Sense::click()),
+                    )
+                    .on_hover_text(&m.id)
+                    .clicked()
+                {
+                    toggle = true;
+                }
+            } else if ui
+                .add(
+                    egui::Label::new(ICON_DESCRIPTION.rich_text().size(14.0))
+                        .sense(egui::Sense::click()),
+                )
+                .on_hover_text(&m.id)
+                .clicked()
+            {
+                open = Some(m.id.clone());
+            }
+            if ui
+                .selectable_label(current == m.id, &m.name)
+                .on_hover_text(&m.id)
+                .clicked()
+            {
+                open = Some(m.id.clone());
+            }
+        });
+        if toggle {
+            if is_collapsed {
+                collapsed.remove(&m.id);
+            } else {
+                collapsed.insert(m.id.clone());
+            }
+        }
+        if kids && !collapsed.contains(&m.id) {
+            ui.indent(m.id.as_str(), |ui| {
+                if let Some(id) = show_map_tree(ui, maps, collapsed, current, Some(&m.id)) {
+                    open = Some(id);
+                }
+            });
+        }
+    }
+    open
 }
 
 /// 工作区 `data/<dir>` 下的表（钥匙/消耗、默认贴图都从这里来）；
@@ -220,7 +335,7 @@ impl EditorApp {
         let (rules, rules_n) = load_rules();
         let status = if gfx_dir.is_dir() {
             format!(
-                "已载入开始地图 m02 · 素材 {} · 门{}种/怪{}种/物{}种/障{}种/块表{} · 规则{}个",
+                "已载入开始地图 start · 素材 {} · 门{}种/怪{}种/物{}种/障{}种/块表{} · 规则{}个",
                 gfx_dir.display(),
                 doors.len(),
                 enemies.len(),
@@ -230,7 +345,7 @@ impl EditorApp {
                 rules_n,
             )
         } else {
-            "已载入开始地图 m02 · 缺素材（把 7630 Graphics 放到 assets/）".to_string()
+            "已载入开始地图 start · 缺素材（把 7630 Graphics 放到 assets/）".to_string()
         };
         Self {
             floor,
@@ -253,8 +368,9 @@ impl EditorApp {
             tiles,
             hero,
             rules,
-            floors: list_floors(),
-            tower_open: true,
+            maps: list_maps(),
+            project_name: load_project_name(),
+            collapsed: std::collections::HashSet::new(),
             zoom: 1.0,
             show_grid: true,
             show_about: false,
@@ -280,7 +396,7 @@ impl EditorApp {
 
     fn load_example(&mut self) {
         match serde_json::from_str(START_FLOOR) {
-            Ok(floor) => self.reset_floor(floor, "已载入开始地图 m02".to_string()),
+            Ok(floor) => self.reset_floor(floor, "已载入开始地图 start".to_string()),
             Err(e) => self.status = format!("示例解析失败：{e}"),
         }
     }
@@ -302,9 +418,9 @@ impl EditorApp {
         }
     }
 
-    /// 从工作区 `data/floors/<stem>.json` 打开（地图树用）。
-    fn open_floor(&mut self, stem: &str) {
-        let path = PathBuf::from("data/floors").join(format!("{stem}.json"));
+    /// 从工作区 `data/maps/<id>.json` 打开（地图树用）。
+    fn open_map(&mut self, id: &str) {
+        let path = PathBuf::from("data/maps").join(format!("{id}.json"));
         match std::fs::read_to_string(&path) {
             Ok(text) => match serde_json::from_str::<Floor>(&text) {
                 Ok(floor) => self.reset_floor(floor, format!("已打开 {}", path.display())),
@@ -474,20 +590,20 @@ impl EditorApp {
         self.status = format!("剧情→{stem} ({x},{y})");
     }
 
-    /// 读目标楼层 JSON（试玩切层共用）。
-    fn load_play_floor(&mut self, stem: &str) -> Option<Floor> {
-        let path = PathBuf::from("data/floors").join(format!("{stem}.json"));
+    /// 读目标地图 JSON（试玩切层共用）。
+    fn load_play_floor(&mut self, id: &str) -> Option<Floor> {
+        let path = PathBuf::from("data/maps").join(format!("{id}.json"));
         let text = match std::fs::read_to_string(&path) {
             Ok(t) => t,
             Err(e) => {
-                self.status = format!("切层失败 {stem}：{e}");
+                self.status = format!("切层失败 {id}：{e}");
                 return None;
             }
         };
         match serde_json::from_str(&text) {
             Ok(f) => Some(f),
             Err(e) => {
-                self.status = format!("切层解析失败 {stem}：{e}");
+                self.status = format!("切层解析失败 {id}：{e}");
                 None
             }
         }
@@ -689,148 +805,62 @@ impl eframe::App for EditorApp {
                         .on_hover_text("更新")
                         .clicked()
                     {
-                        self.floors = list_floors();
+                        self.maps = list_maps();
+                        self.project_name = load_project_name();
                     }
                 });
-                if self.floors.is_empty() {
-                    ui.label("（data/floors 无楼层）");
+                if self.maps.is_empty() {
+                    ui.label("（data/maps 无地图）");
                 } else {
                     use egui_material_icons::icons::*;
-                    // 7630 工程结构写死：顶层依次为开始地图(m02)、00(m01)、
-                    // 魔塔样板组(m03 本体，可折叠，子项为名字含冒号的塔楼地图)、
-                    // 空白地图(m07)；不在上述集合的楼层追加在最后顶层。
-                    let floors = self.floors.clone();
-                    let name_of = |id: &str| -> Option<String> {
-                        floors
-                            .iter()
-                            .find(|(i, _)| i.as_str() == id)
-                            .map(|(_, n)| n.clone())
+                    // 地图树＝RMXP MapInfos 的 parent/order 结构：根节点是工程名，
+                    // 子节点递归；有子图的节点既能点开（名字）也能折叠（chevron/文件夹）。
+                    let maps = self.maps.clone();
+                    let mut collapsed = std::mem::take(&mut self.collapsed);
+                    let mut open: Option<String> = None;
+                    let root_collapsed = collapsed.contains("root");
+                    let chev = if root_collapsed {
+                        ICON_CHEVRON_RIGHT
+                    } else {
+                        ICON_EXPAND_MORE
                     };
-                    // 塔楼地图：名字含冒号，按冒号后楼层号解析为 i64 排序，解析失败排最后。
-                    let mut tower: Vec<(String, String)> = floors
-                        .iter()
-                        .filter(|(_, n)| n.contains(':'))
-                        .cloned()
-                        .collect();
-                    tower.sort_by(|a, b| {
-                        let num = |n: &str| {
-                            n.rsplit(':')
-                                .next()
-                                .unwrap_or("")
-                                .trim()
-                                .parse::<i64>()
-                                .ok()
-                        };
-                        match (num(&a.1), num(&b.1)) {
-                            (Some(x), Some(y)) => x.cmp(&y),
-                            (Some(_), None) => std::cmp::Ordering::Less,
-                            (None, Some(_)) => std::cmp::Ordering::Greater,
-                            (None, None) => a.1.cmp(&b.1),
+                    let mut toggle_root = false;
+                    ui.horizontal(|ui| {
+                        if ui
+                            .add(
+                                egui::Label::new(chev.rich_text().size(14.0))
+                                    .sense(egui::Sense::click()),
+                            )
+                            .clicked()
+                        {
+                            toggle_root = true;
                         }
+                        if ui
+                            .add(
+                                egui::Label::new(ICON_FOLDER.rich_text().size(14.0))
+                                    .sense(egui::Sense::click()),
+                            )
+                            .clicked()
+                        {
+                            toggle_root = true;
+                        }
+                        ui.strong(&self.project_name);
                     });
-                    // 楼层行：文件图标＋name（hover 显示 id），当前楼高亮，点击走 open_floor。
-                    // 返回是否被点击（调用方再调 open_floor，避免闭包借 self 冲突）。
-                    let show_floor = |ui: &mut egui::Ui, cur: bool, id: &str, name: &str| -> bool {
-                        let mut hit = false;
-                        ui.horizontal(|ui| {
-                            if ui
-                                .add(
-                                    egui::Label::new(ICON_DESCRIPTION.rich_text().size(14.0))
-                                        .sense(egui::Sense::click()),
-                                )
-                                .on_hover_text(id)
-                                .clicked()
-                            {
-                                hit = true;
-                            }
-                            if ui.selectable_label(cur, name).on_hover_text(id).clicked() {
-                                hit = true;
-                            }
-                        });
-                        hit
-                    };
-                    for id in ["m02", "m01"] {
-                        if let Some(name) = name_of(id) {
-                            let cur = self.floor.id.as_str() == id;
-                            if show_floor(ui, cur, id, &name) && !cur {
-                                self.open_floor(id);
-                            }
-                        }
-                    }
-                    // 组行：m03 本体，可点击直达（-chevron/文件夹图标只折叠/展开）。
-                    if name_of("m03").is_some() || !tower.is_empty() {
-                        let group_name = name_of("m03").unwrap_or_else(|| "魔塔样板".to_string());
-                        let chev = if self.tower_open {
-                            ICON_EXPAND_MORE
+                    if toggle_root {
+                        if root_collapsed {
+                            collapsed.remove("root");
                         } else {
-                            ICON_CHEVRON_RIGHT
-                        };
-                        let mut toggle = false;
-                        let mut open = false;
-                        ui.horizontal(|ui| {
-                            if ui
-                                .add(
-                                    egui::Label::new(chev.rich_text().size(14.0))
-                                        .sense(egui::Sense::click()),
-                                )
-                                .clicked()
-                            {
-                                toggle = true;
-                            }
-                            if ui
-                                .add(
-                                    egui::Label::new(ICON_FOLDER.rich_text().size(14.0))
-                                        .sense(egui::Sense::click()),
-                                )
-                                .on_hover_text("m03")
-                                .clicked()
-                            {
-                                toggle = true;
-                            }
-                            let cur_m03 = self.floor.id == "m03";
-                            if ui
-                                .selectable_label(cur_m03, &group_name)
-                                .on_hover_text("m03")
-                                .clicked()
-                            {
-                                open = true;
-                            }
+                            collapsed.insert("root".to_string());
+                        }
+                    }
+                    if !collapsed.contains("root") {
+                        ui.indent("root", |ui| {
+                            open = show_map_tree(ui, &maps, &mut collapsed, &self.floor.id, None);
                         });
-                        if toggle {
-                            self.tower_open = !self.tower_open;
-                        }
-                        if open && name_of("m03").is_some() {
-                            self.open_floor("m03");
-                        }
-                        if self.tower_open {
-                            ui.indent("tower", |ui| {
-                                for (id, name) in &tower {
-                                    let cur = id.as_str() == self.floor.id.as_str();
-                                    if show_floor(ui, cur, id, name) && !cur {
-                                        self.open_floor(id);
-                                    }
-                                }
-                            });
-                        }
                     }
-                    if let Some(name) = name_of("m07") {
-                        let cur = self.floor.id == "m07";
-                        if show_floor(ui, cur, "m07", &name) && !cur {
-                            self.open_floor("m07");
-                        }
-                    }
-                    // 未知楼层追加在最后顶层。
-                    for (id, name) in &floors {
-                        if ["m01", "m02", "m03", "m07"].contains(&id.as_str()) {
-                            continue;
-                        }
-                        if tower.iter().any(|(t, _)| t.as_str() == id.as_str()) {
-                            continue;
-                        }
-                        let cur = id.as_str() == self.floor.id.as_str();
-                        if show_floor(ui, cur, id, name) && !cur {
-                            self.open_floor(id);
-                        }
+                    self.collapsed = collapsed;
+                    if let Some(id) = open {
+                        self.open_map(&id);
                     }
                 }
             });
@@ -930,6 +960,32 @@ mod tests {
     fn hidpi_defaults_to_1_5x() {
         assert_eq!(EditorApp::default_zoom(2.0), 1.5);
         assert_eq!(EditorApp::default_zoom(1.0), 1.0);
+    }
+
+    #[test]
+    fn map_tree_children_follow_parent_and_order() {
+        let m = |id: &str, parent: Option<&str>, order: i64| MapEntry {
+            id: id.to_string(),
+            name: id.to_string(),
+            parent: parent.map(str::to_string),
+            order: Some(order),
+        };
+        let maps = vec![
+            m("a", None, 2),
+            m("b", None, 1),
+            m("c", Some("a"), 4),
+            m("d", Some("a"), 3),
+        ];
+        let top: Vec<&str> = children_of(&maps, None)
+            .iter()
+            .map(|x| x.id.as_str())
+            .collect();
+        assert_eq!(top, vec!["b", "a"]);
+        let kids: Vec<&str> = children_of(&maps, Some("a"))
+            .iter()
+            .map(|x| x.id.as_str())
+            .collect();
+        assert_eq!(kids, vec!["d", "c"]);
     }
 
     #[test]

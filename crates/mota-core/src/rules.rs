@@ -705,7 +705,7 @@ mod tests {
                 value: true,
             },
             Cmd::Teleport {
-                floor: "m05".to_string(),
+                floor: "1_2".to_string(),
                 landing: "下楼梯".to_string(),
             },
         ];
@@ -721,7 +721,7 @@ mod tests {
         assert_eq!(out.messages, vec!["你好".to_string()]);
         assert!(out.ops.contains(&Op::Give("gold".to_string(), 50)));
         assert!(out.ops.contains(&Op::Flag("救出仙子".to_string(), true)));
-        assert_eq!(out.goto, Some(("m05".to_string(), "下楼梯".to_string())));
+        assert_eq!(out.goto, Some(("1_2".to_string(), "下楼梯".to_string())));
     }
 
     #[test]

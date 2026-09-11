@@ -617,6 +617,10 @@ mod tests {
             instances: Vec::new(),
             spawn: None,
             intro: None,
+            tower: None,
+            level: None,
+            parent: None,
+            order: None,
         }
     }
 
@@ -878,7 +882,7 @@ mod tests {
         f.instances.push(Instance {
             id: "s1".to_string(),
             template: TemplateKind::StairUp {
-                to_floor: "m05".to_string(),
+                to_floor: "1_2".to_string(),
                 to_landing: "下楼梯".to_string(),
             },
             x: 1,
@@ -898,7 +902,7 @@ mod tests {
         assert_eq!(play.hero, (1, 0));
         assert_eq!(
             play.pending_floor,
-            Some(("m05".to_string(), "下楼梯".to_string()))
+            Some(("1_2".to_string(), "下楼梯".to_string()))
         );
     }
 
@@ -1082,10 +1086,10 @@ mod tests {
             lines: vec!["开场白".to_string()],
             page: 0,
             vanish: None,
-            goto: Some(("m01".to_string(), 12, 1)),
+            goto: Some(("0_0".to_string(), 12, 1)),
         });
         finish_dialog(&mut f, &mut play);
-        assert_eq!(play.pending_goto, Some(("m01".to_string(), 12, 1)));
+        assert_eq!(play.pending_goto, Some(("0_0".to_string(), 12, 1)));
         assert!(play.dialog.is_none());
     }
 

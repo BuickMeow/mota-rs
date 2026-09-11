@@ -186,9 +186,21 @@ pub struct Floor {
     /// 进层自动剧情（开始地图用）：先自动播对话，播完切层。
     #[serde(default)]
     pub intro: Option<FloorIntro>,
+    /// 塔号（None = 特殊地图：开始地图/模板/空白等）。
+    #[serde(default)]
+    pub tower: Option<i64>,
+    /// 层号（>0 地上，0 = 0 层，<0 地下；None = 特殊地图）。
+    #[serde(default)]
+    pub level: Option<i64>,
+    /// 地图树父节点 id（None = 顶层；来自 RMXP MapInfos）。
+    #[serde(default)]
+    pub parent: Option<String>,
+    /// 地图树排序（来自 RMXP MapInfos.order）。
+    #[serde(default)]
+    pub order: Option<i64>,
 }
 
-/// 自动剧情：开始地图（m02）那段无法跳过的开场白 + 结束后的落点。
+/// 自动剧情：开始地图（start）那段无法跳过的开场白 + 结束后的落点。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FloorIntro {
     /// 自动播放的对话（原文每一行一条）。
@@ -369,6 +381,10 @@ mod tests {
             }],
             spawn: Some((0, 0)),
             intro: None,
+            tower: None,
+            level: None,
+            parent: None,
+            order: None,
         };
         assert_eq!(f.landing_pos("入口"), Some((2, 3)));
         // 没摆就是 None，不回落到 spawn
